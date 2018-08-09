@@ -1,10 +1,10 @@
 package main
 
 import (
-	_ "ChickGame/routers"
+	_ "qixijie/routers"
 	"github.com/astaxie/beego"
-	"ChickGame/def"
-	"ChickGame/util"
+	"qixijie/def"
+	"qixijie/util"
 )
 func init(){
 	util.InitCache()

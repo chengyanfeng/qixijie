@@ -1,30 +1,20 @@
 package routers
 
 import (
-	"ChickGame/controllers"
+	"qixijie/controllers"
 	"github.com/astaxie/beego"
-	."ChickGame/filter"
 )
 
 func init() {
+	//正式路由器
+	//登陆
+	beego.Router("/redirecturl", &controllers.MainController{}, "*:Redirecturl")
+	beego.Router("/index", &controllers.MainController{}, "get:Index")
+	//分享接口
+	beego.Router("/upimageAndmessage", &controllers.MainController{}, "*:UpImageAndMessage")
 
-	beego.InsertFilter("/*", beego.BeforeRouter,BaseFilter)
-
-
-	//登陆api
-	beego.Router("/login", &controllers.Authentication{},"post:Login")
-
-	//以下为测试用例
-	//下面是微信转发
-	beego.Router("/main/index", &controllers.MainController{},"get:GetIndex")
-
-	beego.Router("/main/get", &controllers.MainController{},"get:GetTicker")
-
-	beego.Router("/main/get_user_token",&controllers.MainController{},"post:GetToken")
+	beego.Router("/share/get_ticker", &controllers.MainController{}, "get:GetTicker")
+	beego.Router("/share/get_user_token", &controllers.MainController{}, "post:GetToken")
 
 
-	//下面是微信登陆
-	beego.Router("/url", &controllers.MainController{},"get:Url")
-	beego.Router("/test", &controllers.MainController{},"get:Get")
-	beego.Router("/return", &controllers.MainController{},"post:GetUrl")
 }

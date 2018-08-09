@@ -14,9 +14,13 @@ import (
 	"strconv"
 	"github.com/astaxie/beego"
 	"encoding/json"
+	"os"
 )
+
 var localCache cache.Cache
+
 type P map[string]interface{}
+
 func InitCache() {
 	c, err := cache.NewCache("memory", `{"interval":3600}`)
 	//c, err := cache.NewCache("file", `{"CachePath":"./dhcache","FileSuffix":".cache","DirectoryLevel":2,"EmbedExpiry":120}`)
@@ -48,14 +52,15 @@ func S(key string, p ...interface{}) (v interface{}) {
 		return p[0]
 	}
 }
+
 //删除缓存中的缓存grade
-func Del(key string)(log string) {
+func Del(key string) (log string) {
 
 	md5 := Md5(key)
-	err:=localCache.Delete(md5)
+	err := localCache.Delete(md5)
 	fmt.Println("err:")
 	fmt.Println(err)
-	if err!=nil{
+	if err != nil {
 		return "nil"
 	}
 	return "ok"
@@ -126,10 +131,12 @@ func JoinStr(val ...interface{}) (r string) {
 	}
 	return
 }
+
 // 记录err信息
 func Error(v ...interface{}) {
 	beego.Error(v)
 }
+
 //string 转P
 func JsonDecode(b []byte) (p *map[string]interface{}) {
 	p = &map[string]interface{}{}
@@ -138,4 +145,44 @@ func JsonDecode(b []byte) (p *map[string]interface{}) {
 		Error("JsonDecode", string(b), err)
 	}
 	return
+}
+
+func IsEmpty(v interface{}) bool {
+	if v == nil {
+		return true
+	}
+	switch v.(type) {
+	case P:
+		return len(v.(P)) == 0
+	}
+	return ToString(v) == ""
+}
+func (p *P) ToInt(s ...string) {
+	for _, k := range s {
+		v := ToString((*p)[k])
+		(*p)[k] = ToInt(v)
+	}
+}
+func ToInt(s interface{}, default_v ...int) int {
+	i, e := strconv.Atoi(ToString(s))
+	if e != nil && len(default_v) > 0 {
+		return default_v[0]
+	}
+	return i
+}
+
+func WriteFile(url string, body []byte) bool {
+	f, err := os.Create(url)
+	defer f.Close()
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	} else {
+		_, err = f.Write(body)
+		if err != nil {
+			return false
+		} else {
+			return true
+		}
+	}
 }
