@@ -1,0 +1,31 @@
+.container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+}
+
+.container__bd_spacing {
+  padding: 0 15px;
+}
+
+.placeholder {
+  margin: 5px;
+  padding: 0 10px;
+  background-color: #ebebeb;
+  height: 2.3em;
+  line-height: 2.3em;
+  text-align: center;
+  color: #cfcfcf;
+}
+
+.home_upload {
+  padding: 20px;
+}
+
+#qrcode img {
+    display:block;
+    margin:auto;
+}

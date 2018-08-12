@@ -1,0 +1,300 @@
+
+*{margin:0 auto;padding: 0}
+html,body{
+    width: 100%;height: 100%;overflow: hidden;
+}
+html{font-size: 100px}
+.header_banner{
+    width: 100%;height: auto;
+}
+.header_banner p{padding: 0;margin: 0}
+.header_banner p img{width: 100%;height: auto;}
+.center_bg{
+    position: absolute;
+    bottom:0;;
+    width: 100%;
+    height: 100%;
+    background:url("../images/largebg.png") no-repeat fixed center top;
+    background-size: 100% 100%;
+}
+.barrage{
+    position: absolute;
+    width: 100%;
+    height: 1.1rem;
+    background: none;
+}
+#all_list li{
+    width: 5rem;
+    height: 0.9rem;
+    line-height: 0.9rem;
+    font-size: 0.3rem;
+    color:#fff;
+    text-align: center;
+    float: left;
+    margin-left:0,4rem;
+    background:url("../images/blue_btn.png") no-repeat;
+    background-size: 100% 100%;
+}
+screen_container{
+    position:absolute;
+    width: 100%;
+    height: 400px;
+    margin: 30px auto;
+    background: #000;
+    overflow: hidden;
+}
+.screen_toolbar{
+    width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+.express_btn{
+    width: 1.6rem;
+    height: 1.6rem;
+    overflow: hidden;
+}
+.express_btn img{
+    width:100%;
+    height: 100%;
+}
+.express .express_word{
+    display: inline-block;
+    color:#fff;
+    font-size:0.36rem;
+    position: absolute;
+    top:0.2rem;
+    left:45%
+}
+.express{
+    position: relative;
+    width:100%;
+    top:4.1rem;
+    text-align: center
+}
+.letter_bg{
+    width: 100%;
+    height:5.2rem;
+    background:url("../images/bg.png") no-repeat;
+    background-size: 100% 100%;
+}
+.letter_img{
+    width: 85%;
+    height:3.4rem;
+    background:url("../images/letter.png") no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    top:0.96rem;
+    left:7.7%
+}
+.letter_content{
+    width: 80%;
+    height: 3.4rem;
+    position: absolute;
+    font-size:0.3rem;
+    top:0.96rem;
+    left:10%;
+}
+.weui_textarea{
+    display: block;
+    border: 0;
+    resize: none;
+    width: 100%;
+    color: #555;
+    font-size: 0.3rem;
+    line-height: inherit;
+    outline: 0;
+    margin-top:0.2rem;
+}
+.to{
+    font-size:0.36rem;
+    color:#7AA2DF
+}
+.from{
+    font-size: 0.36rem;
+    color:#F092A0;
+    text-align: right
+}
+.to_input{
+    width: 40%!important;
+    color:#7AA2DF!important;
+    font-size:0.3rem;
+    border-bottom: 1px solid #7AA2DF;
+}
+.from_input{
+    width: 40%!important;
+    color:#F092A0!important;
+    font-size:0.3rem;
+    border-bottom: 1px solid #F092A0;
+}
+
+.agree_checkbox{
+    border:1px solid #7AA2DF
+}
+.witness_btn{
+    background: url("../images/red_btn.png");
+    background-size: 100% 100%;
+}
+.witness_btn a{
+    border: none
+}
+.confession_record{
+    text-align: center;min-height: 0.4rem;
+}
+.confession_record p img{
+    width: 100%;height: 100%;
+}
+.left_record{
+    width: 1.06rem;height: 0.3rem;overflow: hidden;float: left;margin-left:16%
+}
+.cen_record{
+    width: 2rem;line-height: 0.4rem;font-size: 0.4rem;float: left;
+}
+.right_record{
+    width: 1.06rem;height: 0.3rem;overflow: hidden;float: left;
+}
+.record_content{
+    background: #eff6ff;
+}
+.say_word ,.hide_text{
+    font-size:0.3rem;
+    color:#7AA2DF
+}
+.to_lover{
+    font-size:0.26rem;
+    color:#7AA2DF
+}
+.tip_word{
+    color:#555;
+    font-size:0.3rem;
+    margin-top:0.3rem;
+}
+.tip_word font{
+    color:#E97589;
+    font-size:0.5rem;
+}
+.ok_btn{
+    width: 3rem;
+    background: url("../images/ok.png");
+    background-size: 100% 100%;
+    color:#fff;
+}
+.dialog_tip{
+    border-radius:8px!important
+}
+._tip{
+    font-size: 0.4rem;
+    color:#444;
+}
+.pay_tip{
+    font-size: 0.3rem;
+    color:#444;
+    margin-top:0.7rem;
+}
+.copy_addr{
+    border:none!important;
+    background: none;
+    border:none;
+    color:#fd748d!important;
+    font-size: 0.3rem!important;
+    margin-top:0.3rem!important
+}
+.pay_result{
+    width: 5.2rem;
+    height: 0.9rem;
+    background: url("../images/pay.png");
+    background-size: 100% 100%;
+    color:#fff; 
+}
+.pay_cancel{
+    width: 5.2rem;
+    height: 0.9rem;
+    background: url("../images/cancel.png");
+    background-size: 100% 100%;
+    color:#79ADEA; 
+}
+.result{
+    line-height: 1rem;
+    overflow: hidden;
+}
+.result .result_tip{
+    width: 20%;
+    font-size: 0.36rem;
+    color:#555;
+    float: left;
+    margin-left:0.3rem
+}
+.result_count{
+    width:60%;
+    font-size:0.3rem;
+    color:#999;
+    float: right;
+    text-align: right;
+    margin-right:0.3rem;
+}
+.deliver{
+    width: 5.2rem;
+    height: 0.9rem;
+    background: url("../images/red_btn.png");
+    background-size: 100% 100%;
+    color:#fff;
+}
+.check_back{
+    width: 5.2rem;
+    height: 0.9rem;
+    font-size: 0.36rem;
+    background: url("../images/cancel.png");
+    background-size: 100% 100%;
+    color:#7AA2EA;
+}
+.shade{
+    width:100%;
+    height:100%;
+    position:fixed; 
+    top :0px;
+    background-color:#000;
+    opacity:0.6;
+    text-align:center;
+}
+.shade p{
+    width: 5.6rem;
+    height: 3.4rem;
+    overflow: hidden;
+    margin-top:0.3rem;
+    margin-right:0.6rem;
+    
+}
+.letter_bg_second{
+    width: 100%;
+    height:11.06rem;
+    background:url("../images/lgbg.png") no-repeat;
+    background-size: 100% 100%;
+}
+.letter_img_second{
+    width: 85%;
+    height:8.9rem;
+    background:url("../images/lg2.png") no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    top:0.6rem;
+    left:7.7%
+}
+/* .second_letter{
+    margin-top:0.6rem;
+} */
+/* .share_letter{
+    height: 6rem;
+    overflow: hidden;
+} */
+.sender{
+    margin-top:2.8rem
+}
+._sender{
+    margin-top:4.8rem
+}
+.also_send{
+    width: 5.2rem;
+    height: 0.9rem;
+    background: url("../images/red_btn.png");
+    background-size: 100% 100%;
+    color:#fff;
+}

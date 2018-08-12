@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>根源连测试</title>
+
+
+</head>
+<body>
+
+
+<div id="img">这是图片 img
+    <form action="/upimageAndmessage" enctype="multipart/form-data" method="post">
+        <input value="{{ .usermessage}}"/>
+        <input value="{{.Addr}}" id="addr"/>
+        <input value="{{.userOpenId}}" id="useropenid"/>
+
+    </form>
+
+</div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src='/static/js/sha1.js'></script>
+<script src='/static/js/weixin.js'></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        shareUrl= 'http://chengyanfeng.natapp1.cc/redirecturl?shareopenid=' + $("#useropenid").val() + '&addr=' + $("#addr").val()
+    })
+</script>
+</html>

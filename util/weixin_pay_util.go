@@ -50,6 +50,7 @@ func checkToken(access_token, openid string) bool {
 	errmsg := p["errmsg"].(string)
 	if errmsg == "ok" {
 		S("pay_token", access_token)
+		S("openid", openid)
 		return true
 
 	} else {
@@ -161,5 +162,44 @@ func GetImageFromCould(mediaId, url string) (imagePath string) {
 		return URL + imageName
 	} else {
 		return "保存图片失败"
+	}
+}
+
+/******************************-----------上链接口----------*************************/
+
+//获取上链请求返回地址
+func GetEthAddress() (ethAddress, payid string) {
+	retrnbody, _ := http.Get("http://service.genyuanlian.com/api/bstk/pay/request?amount=1")
+	defer retrnbody.Body.Close()
+	eth_body, _ := ioutil.ReadAll(retrnbody.Body)
+	p := *JsonDecode([]byte(string(eth_body)))
+	flag := p["isOk"].(bool)
+	if flag {
+		a := p["data"].(map[string]interface{})
+		ethAddress = a["addr"].(string)
+		payid = a["payId"].(string)
+		return
+	} else {
+		return
+	}
+}
+
+//查询是否支付
+func CheckIfPay(payid string) bool {
+	retrnbody, _ := http.Get(" 态： http://service.genyuanlian.com/api/bstk/pay/check?payid="+payid)
+	defer retrnbody.Body.Close()
+	eth_body, _ := ioutil.ReadAll(retrnbody.Body)
+	p := *JsonDecode([]byte(string(eth_body)))
+	flag := p["isOk"].(bool)
+	if flag {
+		a := p["data"].(map[string]interface{})
+		paidAmount:=a["paidAmount"].(string)
+		if ToInt(paidAmount) >0{
+			return true
+		}else {
+			return false
+		}
+		} else {
+		return false
 	}
 }

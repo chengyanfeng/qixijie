@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>链爱</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.4/weui.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="/static/js/sha1.js"></script>
+
+    <script src="/static/js/jscss/qrcode.min.js"></script>
+    <script src="/static/js/jscss/clipboard.js"></script>
+    <!-- <script src="wlap/js/canvas_bg.js"></script> -->
+    <!-- <script src="wlap/js/tx.js"></script> -->
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.3/weui.min.css">
+    <link rel="stylesheet" href="/static/css/tanabata/example.css">
+    <link rel="stylesheet" href="/static/css/tanabata/app.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <script src='/static/js/weixin.js'></script>
+
+</head>
+
+<script type="text/javascript">
+    document.documentElement.style.fontSize = document.documentElement.clientWidth / 750 * 100 + 'PX'
+</script>
+<body>
+<div id="scene_home" class="container">
+    <div class="page article js_show">
+        <canvas id="c" style="position: absolute;z-index: -1;text-align: center;"></canvas>
+        <div class="center_bg"></div>
+        <div class="header_banner">
+            <p><img src="./static/images/banner.png"></p>
+            <input type="hidden" name="openid" value="{{ .openid}}">
+            <!-- <h1 class="page__title">我想和你谈一场永不篡改的链爱</h1> -->
+        </div>
+        <div class="page__bd">
+            <div class="barrage" style="overflow: hidden;" id="news">
+                <!-- <ul class="all-list" id="all_list" style="width:98%;height:3.3rem;display: inline-block; border:1px solid red">
+                    <li>第一条弹幕</li>
+                    <li>第一条弹幕</li>
+                    <li>第一条弹幕</li>
+                </ul> -->
+                <div class="screen_container"></div>
+                <!-- <div class="screen_toolbar">
+                        <input id="screenBulletText" type="text" placeholder="请输入弹幕内容"/>
+                        <button class="send">发射</button>
+                        <button class="clear">关闭弹幕</button>
+                </div> -->
+            </div>
+        </div>
+        <div class="express">
+            <p class="express_btn">
+                <a href='javascript:switchScene("scene_filldata");'><img src="./static/images/circle.png"></a>
+            </p>
+            <!-- <a href='javascript:switchScene("scene_filldata");' class="weui-btn weui-btn_primary">去表白</a> -->
+        </div>
+    </div>
+</div>
+
+<div id="scene_filldata" class="container">
+    <div class="page article js_show">
+        <div class="letter_bg"></div>
+        <div class="letter_img"></div>
+        <div class="letter_content">
+            <div class="page__bd">
+                <div class="weui-flex__item">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <!-- <p class="to">TO:<input class="weui-input to_input" type="text" placeholder="亲爱的" id="data_to"></p>
+                            <span></span> -->
+                            <div class="weui-panel__bd">
+                                <div class="weui-media-box weui-media-box_small-appmsg">
+                                    <a href="javascript:;">
+                                        <p class="to">TO:<input class="weui-input to_input" type="text"
+                                                                placeholder="亲爱的"
+                                                                id="data_to">邮票</p>
+                                    </a>
+                                    <!-- <input class="weui-input" type="text" maxlength="200" placeholder="表白文字" id="data_content" style="margin-top:0.2rem"> -->
+                                    <div class="weui_cell">
+                                        <div class="weui_cell_bd weui_cell_primary">
+                                        <textarea  class="weui_textarea" placeholder="表白文字" rows="3"
+                                                  maxlength="200" id="data_content"></textarea>
+                                            <!-- <div class="weui_textarea_counter"><span id="count">0</span>/<span id="count_max">20</span></div> -->
+                                        </div>
+                                    </div>
+                                    <label for="weuiAgree" class="weui-agree">
+
+                                        <p class="from">Form:<input class="weui-input from_input" type="text"
+                                                                    placeholder="From" value="爱人" id="data_from"></p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <label for="weuiAgree" class="weui-agree">
+            <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox agree_checkbox"/>
+            <span class="weui-agree__text">
+                        公开上墙
+                    </span>
+        </label>
+        <div class="home_upload">
+            <a href='javascript:prepareUploadData();' class="weui-btn weui-btn_primary witness_btn">见证</a>
+        </div>
+
+        <div class="page__bd page__bd_spacing">
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__hd">
+                    <div class="confession_record">
+                        <p class="left_record"><img src="./static/images/left.png"></p>
+                        <p class="cen_record"> 表白记录</p>
+                        <p class="right_record"><img src="./static/images/right.png"></p>
+                    </div>
+                </div>
+
+                <div class="weui-panel__bd record_content">
+                {{/* <!-- {{#each records}} -->*/}}
+                    <label for="weuiAgree" class="weui-agree" style="text-align: right">
+                        <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox agree_checkbox"/>
+                        <span class="weui-agree__text hide_text">
+                                        隐藏
+                                    </span>
+                    </label>
+                    <div class="weui-media-box weui-media-box_text">
+                    {{/* <!-- <p class="weui-media-box__desc">{{data.content}}}</p> -->*/}}
+                        <p class="weui-media-box__desc say_word">Hi，你知道吗？这是我想对你说的话!其实我想大声告诉你，你是我的唯一，唯一的永恒</p>
+                        <label for="weuiAgree" class="weui-agree" style="text-align: right">
+                        {{/* <!-- <h4 class="weui-media-box__title">{{{data.to}}}</h4> -->*/}}
+                            <p class="weui-media-box__title to_lover">@我</p>
+                        </label>
+                    {{/*<!-- <a href="javascript:recordDetail('{{{data.from}}}', '{{{data.to}}}', '{{{data.content}}}', '{{{data._id}}}')" class="weui-btn weui-btn_plain-primary">详情</a> -->*/}}
+                    </div>
+                {{/*<!-- {{/each}} -->*/}}
+                </div>
+            </div>
+        </div>
+        <div class="js_dialog" id="iosDialog2" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog dialog_tip">
+                <div class="weui-dialog__bd">
+                    <p class="tip_word">本次见证消耗</p>
+                    <p class="tip_word"><font>520</font>BSTK</p>
+                    <p class="tip_word">已由活动主办方代为支付</p>
+                </div>
+                <div class="weui-dialog__ft home_upload">
+                    <p><a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary ok_btn">好的</a></p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="scene_pay_wait" class="container">
+    <div class="weui-msg">
+        <div class="weui-msg__icon-area"><i class="weui-icon-waiting weui-icon_msg" style="color:#fd748d"></i></div>
+        <div class="weui-msg__text-area">
+            <h2 class="weui-msg__title _tip">等待BSTK支付确认中...</h2>
+            <h4 class="weui-msg__title pay_tip">使用根源链钱包扫描二维码进行支付</h4>
+            <div id='addr_area' style="border:1px solid red;width: 2.68rem;height: 2.68rem;margin-top:0.3rem">
+                <div id="qrcode" style="text-align: center;"></div>
+                <p class="weui-msg__desc" id="addr" style="display: none;"></p>
+            </div>
+
+            <p class="weui-msg__desc" id="payExpire">支付于2018-08-10 16:24失效</p>
+            <p><a href="javascript:copyAddr();" class="weui-btn_primary copy_addr">复制地址到剪贴板</a></p>
+        </div>
+        <div class="weui-msg__opr-area">
+            <p class="weui-btn-area">
+                <!-- <a href="javascript:copyAddr();" class="weui-btn weui-btn_primary">复制地址到剪贴板</a> -->
+                <a href="javascript:checkPay();" class="weui-btn weui-btn_default pay_result">刷新支付结果</a>
+                <a href="javascript:cancelPay();" class="weui-btn weui-btn_warn pay_cancel">取消支付</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<div id="scene_upload_success" class="container">
+    <div class="page article js_show">
+
+        <div class="letter_bg"></div>
+        <div class="letter_img"></div>
+        <div class="letter_content">
+            <div class="page__bd">
+                <div class="weui-flex__item">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <!-- <p class="to">TO:<input class="weui-input to_input" type="text" placeholder="亲爱的" id="data_to"></p>
+                            <span></span> -->
+                            <div class="weui-panel__bd">
+                                <div class="weui-media-box weui-media-box_small-appmsg">
+                                    <a href="javascript:;">
+                                        <p class="to">TO:<input class="weui-input to_input" type="text"
+                                                                placeholder="亲爱的" id="data_to">邮票</p>
+                                    </a>
+                                    <!-- <input class="weui-input" type="text" maxlength="200" placeholder="表白文字" id="data_content" style="margin-top:0.2rem"> -->
+                                    <div class="weui_cell">
+                                        <div class="weui_cell_bd weui_cell_primary">
+            <textarea id="textarea" class="weui_textarea" placeholder="表白文字" rows="3" maxlength="200"
+                      id="data_content"></textarea>
+                                            <!-- <div class="weui_textarea_counter"><span id="count">0</span>/<span id="count_max">20</span></div> -->
+                                        </div>
+                                    </div>
+                                    <label for="weuiAgree" class="weui-agree">
+
+                                    {{/*
+        <!-- <p class="to">Form:<input class="weui-input from_input" type="text" placeholder="From" value="{{userInfo.nickname}}" id="data_from"></p> -->
+*/}}
+                                        <p class="from">Form:<input class="weui-input from_input" type="text"
+                                                                    placeholder="From" value="爱人" id="data_from">
+                                        </p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-hd result">
+            <p class="page__title result_tip">上链成功</p>
+            <p class="page__title result_count">已有<span id="witness">0</span>人见证了你的爱@</p>
+        </div>
+        <div class="page__hd">
+            <!-- <h1 class="page__title result_tip">上链成功</h1>
+            <p>已有<span id="witness">0</span>人见证了你的爱</p> -->
+            <p id="up_to"></p>
+            <p id="up_content"></p>
+            <p id="up_from"></p>
+            <p class="weui-btn-area">
+                <a href="javascript:openShare();" class="weui-btn weui-btn_primary deliver">投递</a>
+                <a href="javascript:backScene();" class="weui-btn weui-btn_default check_back">查看爱的印记</a>
+            </p>
+        </div>
+        <div class="shade" id="shade" style="display: none" onclick="hideShade()">
+            <p><img src="./static/images/share.png" style="width: 100%;height: 100%;"></p>
+        </div>
+    </div>
+</div>
+
+<div id="scene_share_post_data" class="container">
+    <div class="page article js_show">
+        <div class="letter_bg_second"></div>
+        <div class="letter_img_second"></div>
+        <div class="letter_content" id="reach_time" style="display:block">
+            <div class="page__bd">
+                <div class="weui-flex__item">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <!-- <p class="to">TO:<input class="weui-input to_input" type="text" placeholder="亲爱的" id="data_to"></p>
+                            <span></span> -->
+                            <div class="weui-panel__bd">
+                                <div class="weui-media-box weui-media-box_small-appmsg second_letter">
+                                    <a href="javascript:;">
+                                        <p class="to">TO:<input class="weui-input to_input" type="text" placeholder="亲爱的" id="share_up_to" value="{{ .to}}">邮票</p>
+                                    </a>
+                                    <!-- <input class="weui-input" type="text" maxlength="200" placeholder="表白文字" id="data_content" style="margin-top:0.2rem"> -->
+                                    <div class="weui_cell">
+                                        <div class="weui_cell_bd weui_cell_primary">
+            <textarea id="textarea" class="weui_textarea" placeholder="" rows="3" maxlength="200"
+                      id="share_up_content">{{ .word}}</textarea>
+                                            <!-- <div class="weui_textarea_counter"><span id="count">0</span>/<span id="count_max">20</span></div> -->
+                                        </div>
+                                    </div>
+                                    <label for="weuiAgree" class="weui-agree _sender">
+                                    {{/*
+    <!-- <p class="to">Form:<input class="weui-input from_input" type="text" placeholder="From" value="{{userInfo.nickname}}" id="data_from"></p> -->
+*/}}
+                                        <p class="from">Form:<input class="weui-input from_input" type="text" value="{{.from}}"
+                                                                    placeholder="From" value="爱人" id="share_up_from">
+                                        </p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-msg__opr-area" style="display: block;margin-top:0.5rem">
+                <p class="weui-btn-area">
+                    <a href="javascript:jumpHome();" class="weui-btn weui-btn_primary also_send">我也要表白</a>
+                </p>
+            </div>
+        </div>
+        <div class="letter_content" id="not_reach_time" style="display: none">
+            <div class="page__bd">
+                <div class="weui-flex__item">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <!-- <p class="to">TO:<input class="weui-input to_input" type="text" placeholder="亲爱的" id="data_to"></p>
+                            <span></span> -->
+                            <div class="weui-panel__bd">
+                                <div class="weui-media-box weui-media-box_small-appmsg second_letter">
+                                    <a href="javascript:;">
+                                        <p class="to">TO:<input class="weui-input to_input" type="text"
+                                                                placeholder="亲爱的" id="data_to">邮票</p>
+                                    </a>
+                                    <!-- <input class="weui-input" type="text" maxlength="200" placeholder="表白文字" id="data_content" style="margin-top:0.2rem"> -->
+                                    <div class="weui_cell" style="text-align: center;margin-top:2rem;">
+                                        <div class="weui_cell_bd weui_cell_primary">
+                                            <p style="font-size: 0.6rem;color:#fd748d">9:00:00</p>
+                                            <p style="font-size:0.36rem;color:#7AA2EA">(开启倒计时)</p>
+                                        </div>
+                                    </div>
+                                    <label for="weuiAgree" class="weui-agree sender">
+
+                                    {{/*
+        <!-- <p class="to">Form:<input class="weui-input from_input" type="text" placeholder="From" value="{{userInfo.nickname}}" id="data_from"></p> -->
+*/}}
+                                        <p class="from">Form:<input class="weui-input from_input" type="text"
+                                                                    placeholder="From" value="爱人" id="data_from">
+                                        </p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-msg__opr-area" style="display: block">
+                <p class="weui-btn-area">
+                    <a href="javascript:jumpHome();" class="weui-btn weui-btn_primary">我也要表白</a>
+                </p>
+            </div>
+        </div>
+        <div class="page-hd result">
+            <p class="page__title result_tip">上链成功</p>
+            <p class="page__title result_count">已有
+                <span id="share_witness">3600</span>人见证了你的爱@
+            </p>
+        </div>
+        <!-- <div id="not_reach_time">
+            <div class="page__hd">
+                <h1 class="page__title">上链成功</h1>
+                <p>已有<span id="share_witness">0</span>人见证了你的爱</p>
+                <p>To:神秘人</p>
+                <p>xxx</p>
+                <p>From:神秘人</p>
+            </div>
+        </div> -->
+
+        <!-- <div id="reach_time">
+            <div class="page__hd">
+                <h1 class="page__title">上链成功</h1>
+                <p>已有<span id="share_witness">0</span>人见证了你的爱</p>
+                <p id="share_up_to"></p>
+                <p id="share_up_content"></p>
+                <p id="share_up_from"></p>
+            </div>
+        </div> -->
+
+        <!-- <div class="weui-msg__opr-area" style="display: block">
+            <p class="weui-btn-area">
+                <a href="javascript:jumpHome();" class="weui-btn weui-btn_primary">我也要表白</a>
+            </p>
+        </div> -->
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+    // global var define here
+    var baseLink = 'http://chengyanfeng.natapp1.cc/redirecturl';
+    var shareLink = baseLink;
+    var currentScene = 'scene_home';//'';
+    var prevScene;
+    var payId = '';
+    var successPay = '';
+    var isReachTime;// = ;
+    var openid ={{.openid }}
+    var oder = {{ .oder}}
+    var loading;
+    alert(openid)
+    var loadingStart = function () {
+        loading = weui.loading('处理中...');
+        setTimeout(function () {
+            loading.hide(function () {
+                console.log('`loading` has been hidden');
+            });
+        }, 10000);
+    };
+
+    var loadingStop = function () {
+        if (loading) {
+            loading.hide();
+        }
+    }
+
+
+    var updateAddr = function () {
+        $("#addr").html('');
+        $("#qrcode").empty();
+        new QRCode(document.getElementById("qrcode"), {
+            text: '',
+            width: 128,
+            height: 128,
+            colorDark: "#000000",
+            colorLight: "#ffffff"
+        });
+
+        var expireUtc;// =;
+
+        if (expireUtc > 0) {
+            var expireDate = new Date(expireUtc);
+            // TODO: format it
+            $("#payExpire").html('支付于 ' + expireDate + ' 失效');
+        }
+    };
+
+    // first load goes here
+    if (currentScene === 'scene_pay_wait') {
+        //unfinishAddr
+        updateAddr();
+    } else if (currentScene === 'scene_share_post_data') {
+        // share post
+        if (isReachTime === 1) {
+            var shareData = {to: 'a', from: 'b', content: 'c'};//JSON.stringify(});
+            $("#not_reach_time").hide();
+            $("#share_up_to").html(shareData.to);
+            $("#share_up_from").html(shareData.from);
+            $("#share_up_content").html(shareData.content);
+            $("#reach_time").show();
+        } else {
+            $("#reach_time").hide();
+
+            $("#not_reach_time").show();
+        }
+    }
+
+    // Others start sequence
+    $('#' + currentScene).show();
+
+    function switchScene(sceneId) {
+        $('#' + currentScene).hide();
+        $('#' + sceneId).show();
+        prevScene = currentScene;
+        currentScene = sceneId;
+    }
+
+    function backScene() {
+        if (prevScene) {
+            switchScene(prevScene);
+        } else {
+            switchScene('scene_home');
+        }
+    }
+
+    function prepareUploadData() {
+
+        var formdata = new FormData()
+        var uploadData = {
+            from: $("#data_from").val(),
+            to: $("#data_to").val(),
+            content: $("#data_content").val(),
+
+        };
+
+        var data = JSON.stringify(uploadData);
+        alert(data)
+        // loading
+        /*loadingStart();*/
+        $.post("/upimageAndmessage",
+                {
+                    userform: $("#data_from").val(),
+                    touser: $("#data_to").val(),
+                    word: $("#data_content").val(),
+                    medId: "2",
+                    openid: openid
+
+                }, function (res, status) {
+                    /*loadingStop();*/
+                    debugger
+                    console.log('post res:', res, status);
+                    if (res.code !== 0) {
+                        weui.dialog({
+                            title: '出错了',
+                            content: res.msg,
+                            buttons: [{
+                                label: '确定',
+                                type: 'primary',
+                                onClick: function () {
+                                }
+                            }]
+                        });
+                    } else {
+                        // show payment qrcode page
+                        $("#addr").html(res.addr);
+                        $("#qrcode").empty();
+                        new QRCode(document.getElementById("qrcode"), {
+                            text: res.addr,
+                            width: 128,
+                            height: 128,
+                            colorDark: "#000000",
+                            colorLight: "#ffffff"
+                        });
+
+                        /* var expireDate = new Date(res.data.expireUtc);*/
+                        // TODO: format it
+                        $("#payExpire").html('支付于 ' + "r" + ' 失效');
+                        payId = res.payId;
+                        /* switchScene('scene_pay_wait');*/
+                        addr = res.addr
+                        alert(addr)
+                        debugger
+                        shareUrl= 'http://chengyanfeng.natapp1.cc/index?shareopenid=' + openid + '&addr=' + addr
+                        share()
+                        switchScene('scene_upload_success');
+
+                    }
+                });
+    }
+
+    function copyAddr() {
+        clipboard.writeText($("#addr").text());
+        weui.toast('支付地址已复制到剪贴板', 2000);
+    }
+
+    function checkPay() {
+        loadingStart();
+        $.post("/wlap/api/paybastk_check?appid=tanabata", {
+            uid: ''
+        }, function (res, status) {
+            loadingStop();
+            if (res.code === 0) {
+                if (!res.data.paid) {
+                    weui.toast('还未检查到您的支付确认', 2000);
+                } else if (res.data.upload_error) {
+                    weui.toast('未知错误，请联系客服', 2000);
+                } else if (res.data.new_upload) {
+                    // just upload success
+                    // set upload data
+                    if (!!res.data.new_upload) {
+                        successPay = res.data.new_upload;
+
+                        // update share link
+                        shareLink += '&pid=' + successPay._id;
+                        updateWxShareInfo();
+                        var data = JSON.parse(successPay.dataOrg);
+                        $("#up_to").html(data.to);
+                        $("#up_from").html(data.from);
+                        $("#up_content").html(data.content);
+                    }
+
+                    switchScene('scene_upload_success');
+                } else {
+                    // do nothing
+                }
+            }
+
+        });
+    }
+
+    function cancelPay() {
+        loadingStart();
+        $.post("/wlap/api/paybastk_cancel?appid=tanabata", {
+            uid: ''
+        }, function (res, status) {
+            loadingStop();
+            weui.toast('支付单已取消', 2000);
+            // switch to upload
+            switchScene('scene_filldata');
+        });
+    }
+
+    function recordDetail(from, to, content, payId) {
+        shareLink += '&pid=' + payId;
+        updateWxShareInfo();
+        $("#up_to").html(to);
+        $("#up_from").html(from);
+        $("#up_content").html(content);
+        switchScene('scene_upload_success');
+    }
+
+    function jumpHome() {
+       window.location.href=shareLink = baseLink;
+        /*updateWxShareInfo();
+        switchScene('scene_home');*/
+    }
+
+    function openShare() {
+        // TODO: show wechat share promtp
+        $("#shade").css("display", "block");
+    }
+
+    function hideShade() {
+        $("#shade").css("display", "none");
+    }
+</script>
+<script>
+    // 弹幕定时器
+    var timers = [];
+    // 控制弹幕显隐变量
+    var isShow = true;
+    // 监听发送按钮
+    $(".send").on("click", function () {
+        // 创建弹幕
+        var jqueryDom = createScreenbullet($("#screenBulletText").val());
+        // 添加定时任务
+        addInterval(jqueryDom);
+    });
+    // 监听关闭弹幕按钮
+    $(".clear").on("click", function () {
+        if (isShow) {
+            $(".bullet").css("opacity", 0);
+            isShow = false;
+        } else {
+            $(".bullet").css("opacity", 1);
+            isShow = true;
+        }
+    });
+
+    // 新建一个弹幕
+    function createScreenbullet(text) {
+        var jqueryDom = $("<div class='bullet'>" + text + "</div>");
+        var fontColor = "rgb(" + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random()) + ")";
+        var fontSize = Math.floor((Math.random() + 1) * 24) + "px";
+        var left = $(".screen_container").width() + "px";
+        var top = Math.floor(Math.random() * 400) + "px";
+        top = parseInt(top) > 352 ? "352px" : top;
+        jqueryDom.css({
+            "position": 'absolute',
+            "color": fontColor,
+            "font-size": fontSize,
+            "left": left,
+            "top": top,
+        });
+        $(".screen_container").append(jqueryDom);
+        return jqueryDom;
+    }
+
+    // 为弹幕添加定时任务
+    function addInterval(jqueryDom) {
+        var left = jqueryDom.offset().left - $(".screen_container").offset().left;
+        var timer = setInterval(function () {
+            left--;
+            jqueryDom.css("left", left + "px");
+            if (jqueryDom.offset().left + jqueryDom.width() < $(".screen_container").offset().left) {
+                jqueryDom.remove();
+                clearInterval(timer);
+            }
+        }, 10);
+        timers.push(timer);
+    }
+
+    $(document).ready(function () {
+        if (oder == "share") {
+            switchScene('scene_share_post_data');
+        }
+
+
+    })
+</script>
+</html>
