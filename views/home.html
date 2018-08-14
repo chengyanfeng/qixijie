@@ -18,7 +18,7 @@
     <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.4/weui.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
     <script src="/static/js/sha1.js"></script>
-
+    <script src="/static/js/countdown.min.js"></script>
     <script src="/static/js/jscss/qrcode.min.js"></script>
     <script src="/static/js/jscss/clipboard.js"></script>
     <!-- <script src="wlap/js/canvas_bg.js"></script> -->
@@ -40,30 +40,26 @@
         <canvas id="c" style="position: absolute;z-index: -1;text-align: center;"></canvas>
         <div class="center_bg"></div>
         <div class="header_banner">
-            <p><img src="./static/images/banner.png"></p>
+            <p><img src="../static/images/banner.png"></p>
             <input type="hidden" name="openid" value="{{ .openid}}">
-            <!-- <h1 class="page__title">我想和你谈一场永不篡改的链爱</h1> -->
+
         </div>
         <div class="page__bd">
-            <div class="barrage" style="overflow: hidden;" id="news">
-                <!-- <ul class="all-list" id="all_list" style="width:98%;height:3.3rem;display: inline-block; border:1px solid red">
-                    <li>第一条弹幕</li>
-                    <li>第一条弹幕</li>
-                    <li>第一条弹幕</li>
-                </ul> -->
-                <div class="screen_container"></div>
-                <!-- <div class="screen_toolbar">
-                        <input id="screenBulletText" type="text" placeholder="请输入弹幕内容"/>
-                        <button class="send">发射</button>
-                        <button class="clear">关闭弹幕</button>
-                </div> -->
+            <div class="barrage js_barrage_wrap" style="overflow: hidden;">
+                <div id="barrage1" class="js_barrage_line"></div>
+                <div id="barrage2" class="js_barrage_line"></div>
+                <div id="barrage3" class="js_barrage_line"></div>
+
             </div>
         </div>
         <div class="express">
             <p class="express_btn">
-                <a href='javascript:switchScene("scene_filldata");'><img src="./static/images/circle.png"></a>
+                <a href='javascript:switchScene("scene_filldata");'>
+                    <img src="../static/images/circle.png">
+                    <span class="first_btn">我要表白</span>
+                </a>
             </p>
-            <!-- <a href='javascript:switchScene("scene_filldata");' class="weui-btn weui-btn_primary">去表白</a> -->
+
         </div>
     </div>
 </div>
@@ -72,26 +68,25 @@
     <div class="page article js_show">
         <div class="letter_bg"></div>
         <div class="letter_img"></div>
+        <a href='javascript:switchScene("scene_home");'> <div class="go_back"></div></a>
         <div class="letter_content">
             <div class="page__bd">
                 <div class="weui-flex__item">
                     <div class="weui-cell">
                         <div class="weui-cell__bd">
-                            <!-- <p class="to">TO:<input class="weui-input to_input" type="text" placeholder="亲爱的" id="data_to"></p>
-                            <span></span> -->
                             <div class="weui-panel__bd">
                                 <div class="weui-media-box weui-media-box_small-appmsg">
                                     <a href="javascript:;">
                                         <p class="to">TO:<input class="weui-input to_input" type="text"
                                                                 placeholder="亲爱的"
-                                                                id="data_to">邮票</p>
+                                                                id="data_to">
+                                        </p>
+                                        <span class="picture" id="chooseImage" onclick="chooseimge()"><img src="../static/images/circle.png" id="updateimg"></span>
                                     </a>
-                                    <!-- <input class="weui-input" type="text" maxlength="200" placeholder="表白文字" id="data_content" style="margin-top:0.2rem"> -->
                                     <div class="weui_cell">
                                         <div class="weui_cell_bd weui_cell_primary">
-                                        <textarea  class="weui_textarea" placeholder="表白文字" rows="3"
+                                        <textarea class="weui_textarea" placeholder="表白文字" rows="3"
                                                   maxlength="200" id="data_content"></textarea>
-                                            <!-- <div class="weui_textarea_counter"><span id="count">0</span>/<span id="count_max">20</span></div> -->
                                         </div>
                                     </div>
                                     <label for="weuiAgree" class="weui-agree">
@@ -108,11 +103,12 @@
         </div>
         <label for="weuiAgree" class="weui-agree">
             <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox agree_checkbox"/>
-            <span class="weui-agree__text">
+            <span class="weui-agree__text" >
                         公开上墙
                     </span>
         </label>
         <div class="home_upload">
+
             <a href='javascript:prepareUploadData();' class="weui-btn weui-btn_primary witness_btn">见证</a>
         </div>
 
@@ -125,62 +121,73 @@
                         <p class="right_record"><img src="./static/images/right.png"></p>
                     </div>
                 </div>
-
                 <div class="weui-panel__bd record_content">
-                {{/* <!-- {{#each records}} -->*/}}
                     <label for="weuiAgree" class="weui-agree" style="text-align: right">
-                        <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox agree_checkbox"/>
+                       {{/* <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox agree_checkbox"/>
                         <span class="weui-agree__text hide_text">
                                         隐藏
-                                    </span>
+                                    </span>*/}}
                     </label>
-                    <div class="weui-media-box weui-media-box_text">
-                    {{/* <!-- <p class="weui-media-box__desc">{{data.content}}}</p> -->*/}}
+                    <div class="weui-media-box weui-media-box_text" id="historyData">
+                    {{if .nodelist }}
+                    {{range .nodelist }}
+                        <p class="weui-media-box__desc say_word">{{ .Word}}</p>
+                        <label for="weuiAgree" class="weui-agree" style="text-align: right">
+                            <p class="weui-media-box__title to_lover">{{ .To}}</p>
+                        </label>
+                    {{end }}
+                    {{else}}
                         <p class="weui-media-box__desc say_word">Hi，你知道吗？这是我想对你说的话!其实我想大声告诉你，你是我的唯一，唯一的永恒</p>
                         <label for="weuiAgree" class="weui-agree" style="text-align: right">
-                        {{/* <!-- <h4 class="weui-media-box__title">{{{data.to}}}</h4> -->*/}}
                             <p class="weui-media-box__title to_lover">@我</p>
                         </label>
-                    {{/*<!-- <a href="javascript:recordDetail('{{{data.from}}}', '{{{data.to}}}', '{{{data.content}}}', '{{{data._id}}}')" class="weui-btn weui-btn_plain-primary">详情</a> -->*/}}
+                    {{end}}
+
                     </div>
-                {{/*<!-- {{/each}} -->*/}}
                 </div>
             </div>
         </div>
-        <div class="js_dialog" id="iosDialog2" style="display: none;">
-            <div class="weui-mask"></div>
-            <div class="weui-dialog dialog_tip">
-                <div class="weui-dialog__bd">
-                    <p class="tip_word">本次见证消耗</p>
-                    <p class="tip_word"><font>520</font>BSTK</p>
-                    <p class="tip_word">已由活动主办方代为支付</p>
-                </div>
-                <div class="weui-dialog__ft home_upload">
-                    <p><a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary ok_btn">好的</a></p>
 
-                </div>
-            </div>
+    </div>
+</div>
+<div class="js_dialog" id="iosDialog2" style="display:none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog dialog_tip">
+        <div class="weui-dialog__bd">
+            <p class="tip_word">本次见证消耗</p>
+            <p class="tip_word"><font>520</font>BSTK</p>
+            <p class="tip_word">已由活动主办方代为支付</p>
+        </div>
+        <div class="weui-dialog__ft home_upload">
+            <p><a href="javascript:bsthide()" class="weui-dialog__btn weui-dialog__btn_primary ok_btn">好的</a></p>
+
         </div>
     </div>
 </div>
-
+<div class="luck_draw"  onclick="hideLuck()">
+</div>
+<p class="luck_tip">
+    <img src="./static/images/luckTip.png">
+    <span class="go_luck" id="go_draw">
+        <img src="./static/images/goLuck.png">
+    </span>
+</p>
 <div id="scene_pay_wait" class="container">
     <div class="weui-msg">
         <div class="weui-msg__icon-area"><i class="weui-icon-waiting weui-icon_msg" style="color:#fd748d"></i></div>
         <div class="weui-msg__text-area">
             <h2 class="weui-msg__title _tip">等待BSTK支付确认中...</h2>
             <h4 class="weui-msg__title pay_tip">使用根源链钱包扫描二维码进行支付</h4>
-            <div id='addr_area' style="border:1px solid red;width: 2.68rem;height: 2.68rem;margin-top:0.3rem">
+            <div id='addr_area' style="width: 2.68rem;height: 2.68rem;margin-top:0.3rem">
                 <div id="qrcode" style="text-align: center;"></div>
-                <p class="weui-msg__desc" id="addr" style="display: none;"></p>
+                <p class="weui-msg__desc" id="payId" style="display: none;"></p>
             </div>
 
             <p class="weui-msg__desc" id="payExpire">支付于2018-08-10 16:24失效</p>
-            <p><a href="javascript:copyAddr();" class="weui-btn_primary copy_addr">复制地址到剪贴板</a></p>
+            <p><a href="javascript:copypayId();" class="weui-btn_primary copy_addr">复制地址到剪贴板</a></p>
         </div>
         <div class="weui-msg__opr-area">
             <p class="weui-btn-area">
-                <!-- <a href="javascript:copyAddr();" class="weui-btn weui-btn_primary">复制地址到剪贴板</a> -->
                 <a href="javascript:checkPay();" class="weui-btn weui-btn_default pay_result">刷新支付结果</a>
                 <a href="javascript:cancelPay();" class="weui-btn weui-btn_warn pay_cancel">取消支付</a>
             </p>
@@ -193,34 +200,32 @@
 
         <div class="letter_bg"></div>
         <div class="letter_img"></div>
+        <a href='javascript:switchScene("scene_home");'> <div class="go_back"></div></a>
         <div class="letter_content">
             <div class="page__bd">
                 <div class="weui-flex__item">
                     <div class="weui-cell">
                         <div class="weui-cell__bd">
-                            <!-- <p class="to">TO:<input class="weui-input to_input" type="text" placeholder="亲爱的" id="data_to"></p>
-                            <span></span> -->
                             <div class="weui-panel__bd">
                                 <div class="weui-media-box weui-media-box_small-appmsg">
                                     <a href="javascript:;">
                                         <p class="to">TO:<input class="weui-input to_input" type="text"
-                                                                placeholder="亲爱的" id="data_to">邮票</p>
+                                                                readonly="readonly" placeholder="亲爱的" id="back_data_to">
+                                        </p>
+                                        <span class="picture"><img src="../static/images/circle.png" id="updateimg1"></span>
                                     </a>
-                                    <!-- <input class="weui-input" type="text" maxlength="200" placeholder="表白文字" id="data_content" style="margin-top:0.2rem"> -->
                                     <div class="weui_cell">
                                         <div class="weui_cell_bd weui_cell_primary">
-            <textarea id="textarea" class="weui_textarea" placeholder="表白文字" rows="3" maxlength="200"
-                      id="data_content"></textarea>
-                                            <!-- <div class="weui_textarea_counter"><span id="count">0</span>/<span id="count_max">20</span></div> -->
+                                            <textarea id="back_textarea" class="weui_textarea" placeholder="表白文字"
+                                                      readonly="readonly" rows="3" maxlength="200"></textarea>
                                         </div>
                                     </div>
                                     <label for="weuiAgree" class="weui-agree">
 
-                                    {{/*
-        <!-- <p class="to">Form:<input class="weui-input from_input" type="text" placeholder="From" value="{{userInfo.nickname}}" id="data_from"></p> -->
-*/}}
+
                                         <p class="from">Form:<input class="weui-input from_input" type="text"
-                                                                    placeholder="From" value="爱人" id="data_from">
+                                                                    readonly="readonly" placeholder="From" value="爱人"
+                                                                    id="back_data_from">
                                         </p>
                                     </label>
                                 </div>
@@ -232,17 +237,14 @@
         </div>
         <div class="page-hd result">
             <p class="page__title result_tip">上链成功</p>
-            <p class="page__title result_count">已有<span id="witness">0</span>人见证了你的爱@</p>
+            <p class="page__title result_count">已有<span id="witness"></span>人见证了你的爱@</p>
         </div>
         <div class="page__hd">
-            <!-- <h1 class="page__title result_tip">上链成功</h1>
-            <p>已有<span id="witness">0</span>人见证了你的爱</p> -->
             <p id="up_to"></p>
             <p id="up_content"></p>
             <p id="up_from"></p>
             <p class="weui-btn-area">
                 <a href="javascript:openShare();" class="weui-btn weui-btn_primary deliver">投递</a>
-                <a href="javascript:backScene();" class="weui-btn weui-btn_default check_back">查看爱的印记</a>
             </p>
         </div>
         <div class="shade" id="shade" style="display: none" onclick="hideShade()">
@@ -255,32 +257,33 @@
     <div class="page article js_show">
         <div class="letter_bg_second"></div>
         <div class="letter_img_second"></div>
+        <a href='javascript:switchScene("scene_home");'> <div class="go_back"></div></a>
         <div class="letter_content" id="reach_time" style="display:block">
             <div class="page__bd">
                 <div class="weui-flex__item">
                     <div class="weui-cell">
                         <div class="weui-cell__bd">
-                            <!-- <p class="to">TO:<input class="weui-input to_input" type="text" placeholder="亲爱的" id="data_to"></p>
-                            <span></span> -->
+
                             <div class="weui-panel__bd">
                                 <div class="weui-media-box weui-media-box_small-appmsg second_letter">
                                     <a href="javascript:;">
-                                        <p class="to">TO:<input class="weui-input to_input" type="text" placeholder="亲爱的" id="share_up_to" value="{{ .to}}">邮票</p>
+                                        <p class="to">TO:<input class="weui-input to_input" type="text"
+                                                                readonly="readonly" placeholder="亲爱的" id="share_up_to"
+                                                                value="{{ .to}}">
+                                        </p>
+                                        <span class="picture"><img src="{{ .imageurl}}" ></span>
+
                                     </a>
-                                    <!-- <input class="weui-input" type="text" maxlength="200" placeholder="表白文字" id="data_content" style="margin-top:0.2rem"> -->
                                     <div class="weui_cell">
                                         <div class="weui_cell_bd weui_cell_primary">
-            <textarea id="textarea" class="weui_textarea" placeholder="" rows="3" maxlength="200"
-                      id="share_up_content">{{ .word}}</textarea>
-                                            <!-- <div class="weui_textarea_counter"><span id="count">0</span>/<span id="count_max">20</span></div> -->
+            <textarea id="share_up_textarea" class="weui_textarea" placeholder="" rows="3" maxlength="200"
+                 value="{{ .word}}"     readonly="readonly"></textarea>
                                         </div>
                                     </div>
                                     <label for="weuiAgree" class="weui-agree _sender">
-                                    {{/*
-    <!-- <p class="to">Form:<input class="weui-input from_input" type="text" placeholder="From" value="{{userInfo.nickname}}" id="data_from"></p> -->
-*/}}
-                                        <p class="from">Form:<input class="weui-input from_input" type="text" value="{{.from}}"
-                                                                    placeholder="From" value="爱人" id="share_up_from">
+                                        <p class="from">Form:<input class="weui-input from_input" type="text" value="{{ .from}}"
+                                                                    readonly="readonly" placeholder="From" value="爱人"
+                                                                    id="share_up_from">
                                         </p>
                                     </label>
                                 </div>
@@ -300,28 +303,28 @@
                 <div class="weui-flex__item">
                     <div class="weui-cell">
                         <div class="weui-cell__bd">
-                            <!-- <p class="to">TO:<input class="weui-input to_input" type="text" placeholder="亲爱的" id="data_to"></p>
-                            <span></span> -->
                             <div class="weui-panel__bd">
                                 <div class="weui-media-box weui-media-box_small-appmsg second_letter">
                                     <a href="javascript:;">
                                         <p class="to">TO:<input class="weui-input to_input" type="text"
-                                                                placeholder="亲爱的" id="data_to">邮票</p>
+                                                                readonly="readonly" placeholder="神秘人" id="data_to">邮票
+                                        </p>
                                     </a>
-                                    <!-- <input class="weui-input" type="text" maxlength="200" placeholder="表白文字" id="data_content" style="margin-top:0.2rem"> -->
                                     <div class="weui_cell" style="text-align: center;margin-top:2rem;">
                                         <div class="weui_cell_bd weui_cell_primary">
-                                            <p style="font-size: 0.6rem;color:#fd748d">9:00:00</p>
+                                            <p style="font-size: 0.6rem;color:#fd748d"></p>
                                             <p style="font-size:0.36rem;color:#7AA2EA">(开启倒计时)</p>
+                                            <span style="font-size:0.36rem;color:#7AA2EA" id="day"></span>:
+                                            <span style="font-size:0.36rem;color:#7AA2EA" id="hour"></span>:
+                                            <span style="font-size:0.36rem;color:#7AA2EA" id="minute"></span>:
+                                            <span style="font-size:0.36rem;color:#7AA2EA" id="second"></span>
+
                                         </div>
                                     </div>
                                     <label for="weuiAgree" class="weui-agree sender">
-
-                                    {{/*
-        <!-- <p class="to">Form:<input class="weui-input from_input" type="text" placeholder="From" value="{{userInfo.nickname}}" id="data_from"></p> -->
-*/}}
                                         <p class="from">Form:<input class="weui-input from_input" type="text"
-                                                                    placeholder="From" value="爱人" id="data_from">
+                                                                    readonly="readonly" placeholder="From" value="神秘人"
+                                                                    id="data_from">
                                         </p>
                                     </label>
                                 </div>
@@ -332,41 +335,16 @@
             </div>
             <div class="weui-msg__opr-area" style="display: block">
                 <p class="weui-btn-area">
-                    <a href="javascript:jumpHome();" class="weui-btn weui-btn_primary">我也要表白</a>
+                    <a href="javascript:jumpHome();" class="weui-btn weui-btn_primary also_send">我也要表白</a>
                 </p>
             </div>
         </div>
         <div class="page-hd result">
             <p class="page__title result_tip">上链成功</p>
             <p class="page__title result_count">已有
-                <span id="share_witness">3600</span>人见证了你的爱@
+                <span id="share_witness">{{ .height}}</span>人见证了你的爱<span class="ask_pic" ></span>
             </p>
         </div>
-        <!-- <div id="not_reach_time">
-            <div class="page__hd">
-                <h1 class="page__title">上链成功</h1>
-                <p>已有<span id="share_witness">0</span>人见证了你的爱</p>
-                <p>To:神秘人</p>
-                <p>xxx</p>
-                <p>From:神秘人</p>
-            </div>
-        </div> -->
-
-        <!-- <div id="reach_time">
-            <div class="page__hd">
-                <h1 class="page__title">上链成功</h1>
-                <p>已有<span id="share_witness">0</span>人见证了你的爱</p>
-                <p id="share_up_to"></p>
-                <p id="share_up_content"></p>
-                <p id="share_up_from"></p>
-            </div>
-        </div> -->
-
-        <!-- <div class="weui-msg__opr-area" style="display: block">
-            <p class="weui-btn-area">
-                <a href="javascript:jumpHome();" class="weui-btn weui-btn_primary">我也要表白</a>
-            </p>
-        </div> -->
     </div>
 </div>
 
@@ -379,11 +357,11 @@
     var prevScene;
     var payId = '';
     var successPay = '';
-    var isReachTime;// = ;
+    var isReachTime = {{ .isReachTime}};// = ;
     var openid ={{.openid }}
     var oder = {{ .oder}}
     var loading;
-    alert(openid)
+
     var loadingStart = function () {
         loading = weui.loading('处理中...');
         setTimeout(function () {
@@ -401,7 +379,7 @@
 
 
     var updateAddr = function () {
-        $("#addr").html('');
+        $("#payId").html('');
         $("#qrcode").empty();
         new QRCode(document.getElementById("qrcode"), {
             text: '',
@@ -419,38 +397,52 @@
             $("#payExpire").html('支付于 ' + expireDate + ' 失效');
         }
     };
-
-    // first load goes here
-    if (currentScene === 'scene_pay_wait') {
-        //unfinishAddr
-        updateAddr();
-    } else if (currentScene === 'scene_share_post_data') {
-        // share post
-        if (isReachTime === 1) {
-            var shareData = {to: 'a', from: 'b', content: 'c'};//JSON.stringify(});
-            $("#not_reach_time").hide();
-            $("#share_up_to").html(shareData.to);
-            $("#share_up_from").html(shareData.from);
-            $("#share_up_content").html(shareData.content);
-            $("#reach_time").show();
-        } else {
-            $("#reach_time").hide();
-
-            $("#not_reach_time").show();
+    //初始化判断是否显示
+    var ifshowdata = function () {
+        // first load goes here
+        if (currentScene === 'scene_pay_wait') {
+            //unfinishAddr
+            updateAddr();
+        } else if (currentScene === 'scene_share_post_data') {
+            // share post
+            if (isReachTime === 1) {
+                var shareData = {to: {{ .to}}, from: {{.from}}, content: {{ .word}}};//JSON.stringify(});
+                $("#not_reach_time").hide();
+                $("#share_up_to").val(shareData.to);
+                $("#share_up_to").attr("readonly", "readonly");
+                $("#share_up_from").val(shareData.from);
+                $("#share_up_from").attr("readonly", "readonly");
+                $("#share_up_textarea").val(shareData.content);
+                $("#share_up_textarea").attr("readonly", "readonly");
+                $("#reach_time").show();
+            } else {
+                var shareData = {to: {{ .to}}, from: {{.from}}, content: {{ .word}}};//JSON.stringify(});
+                $("#not_reach_time").hide();
+                $("#share_up_to").val(shareData.to);
+                $("#share_up_to").attr("readonly", "readonly");
+                $("#share_up_from").val(shareData.from);
+                $("#share_up_from").attr("readonly", "readonly");
+                $("#share_up_textarea").val(shareData.content);
+                $("#share_up_textarea").attr("readonly", "readonly");
+                $("#reach_time").hide();
+                $("#not_reach_time").show();
+            }
         }
     }
-
     // Others start sequence
     $('#' + currentScene).show();
 
     function switchScene(sceneId) {
+        debugger
         $('#' + currentScene).hide();
         $('#' + sceneId).show();
         prevScene = currentScene;
         currentScene = sceneId;
     }
 
+
     function backScene() {
+
         if (prevScene) {
             switchScene(prevScene);
         } else {
@@ -459,30 +451,24 @@
     }
 
     function prepareUploadData() {
-
-        var formdata = new FormData()
-        var uploadData = {
-            from: $("#data_from").val(),
-            to: $("#data_to").val(),
-            content: $("#data_content").val(),
-
-        };
-
-        var data = JSON.stringify(uploadData);
-        alert(data)
+        if (ifOpen()){
+            ifOpenShow="true"
+        }else {
+            ifOpenShow="false"
+        }
         // loading
-        /*loadingStart();*/
+        loadingStart();
         $.post("/upimageAndmessage",
                 {
                     userform: $("#data_from").val(),
                     touser: $("#data_to").val(),
                     word: $("#data_content").val(),
-                    medId: "2",
-                    openid: openid
+                    medId: medId,
+                    openid: openid,
+                    ifOpenShow:ifOpenShow
 
                 }, function (res, status) {
-                    /*loadingStop();*/
-                    debugger
+                    loadingStop();
                     console.log('post res:', res, status);
                     if (res.code !== 0) {
                         weui.dialog({
@@ -497,7 +483,7 @@
                         });
                     } else {
                         // show payment qrcode page
-                        $("#addr").html(res.addr);
+                        $("#payId").html(res.payId);
                         $("#qrcode").empty();
                         new QRCode(document.getElementById("qrcode"), {
                             text: res.addr,
@@ -507,54 +493,72 @@
                             colorLight: "#ffffff"
                         });
 
-                        /* var expireDate = new Date(res.data.expireUtc);*/
+                        /*var expireDate = new Date(res.data.expireUtc);*/
                         // TODO: format it
                         $("#payExpire").html('支付于 ' + "r" + ' 失效');
-                        payId = res.payId;
-                        /* switchScene('scene_pay_wait');*/
-                        addr = res.addr
-                        alert(addr)
-                        debugger
-                        shareUrl= 'http://chengyanfeng.natapp1.cc/index?shareopenid=' + openid + '&addr=' + addr
-                        share()
-                        switchScene('scene_upload_success');
+                        if (res.isPay != 1) {
+                            addr = res.addr
+                            payId = res.payId;
+                            switchScene('scene_pay_wait');
+                            checkPay(true);
+                            payCheckInterval = setInterval(function() {
+                                checkPay(true);
+                            }, 5000);
+                        } else {
+                            addr = res.addr
+                            shareUrl = 'http://chengyanfeng.natapp1.cc/index?shareopenid=' + openid + '&addr=' + addr
+                            //重新初始化微信分享
+                            share()
+                            $("#back_data_from").val($("#data_from").val())
+                            $("#back_data_from").attr("readonly", "readonly");
+                            $("#back_data_to").val($("#data_to").val())
+                            $("#back_data_to").attr("readonly", "readonly");
+                            $("#back_textarea").val($("#data_content").val())
+                            $("#back_textarea").attr("readonly", "readonly");
 
+
+                            $("#witness").html(res.height);
+                            switchScene('scene_upload_success');
+                            $("#iosDialog2").css("display", "block");
+                        }
                     }
                 });
     }
 
-    function copyAddr() {
-        clipboard.writeText($("#addr").text());
+    function copypayId() {
+        clipboard.writeText($("#payId").text());
         weui.toast('支付地址已复制到剪贴板', 2000);
     }
 
     function checkPay() {
         loadingStart();
-        $.post("/wlap/api/paybastk_check?appid=tanabata", {
-            uid: ''
+        $.post("/checkpay", {
+            openid: openid,
+            addr: addr,
+            payid: payId
+
         }, function (res, status) {
+            debugger
             loadingStop();
             if (res.code === 0) {
+                debugger
                 if (!res.data.paid) {
                     weui.toast('还未检查到您的支付确认', 2000);
                 } else if (res.data.upload_error) {
                     weui.toast('未知错误，请联系客服', 2000);
-                } else if (res.data.new_upload) {
-                    // just upload success
-                    // set upload data
-                    if (!!res.data.new_upload) {
-                        successPay = res.data.new_upload;
-
-                        // update share link
-                        shareLink += '&pid=' + successPay._id;
-                        updateWxShareInfo();
-                        var data = JSON.parse(successPay.dataOrg);
-                        $("#up_to").html(data.to);
-                        $("#up_from").html(data.from);
-                        $("#up_content").html(data.content);
-                    }
-
+                } else if (res.data.success) {
+                    shareUrl = 'http://chengyanfeng.natapp1.cc/index?shareopenid=' + openid + '&addr=' + addr
+                    share();
+                    $("#back_data_from").val(res.data.from);
+                    $("#back_data_from").attr("readonly", "readonly");
+                    $("#back_data_to").val(res.data.to);
+                    $("#back_data_to").attr("readonly", "readonly");
+                    $("#back_textarea").val(res.data.word);
+                    $("#back_textarea").attr("readonly", "readonly");
+                    //设置高度
+                    $("#witness").html(res.data.height);
                     switchScene('scene_upload_success');
+                    clearInterval(payCheckInterval)
                 } else {
                     // do nothing
                 }
@@ -562,6 +566,7 @@
 
         });
     }
+
 
     function cancelPay() {
         loadingStart();
@@ -575,6 +580,7 @@
         });
     }
 
+
     function recordDetail(from, to, content, payId) {
         shareLink += '&pid=' + payId;
         updateWxShareInfo();
@@ -585,9 +591,8 @@
     }
 
     function jumpHome() {
-       window.location.href=shareLink = baseLink;
-        /*updateWxShareInfo();
-        switchScene('scene_home');*/
+        window.location.href = shareLink
+
     }
 
     function openShare() {
@@ -658,9 +663,214 @@
     $(document).ready(function () {
         if (oder == "share") {
             switchScene('scene_share_post_data');
+            ifshowdata()
         }
-
-
     })
+    var bsthide=function () {
+        $("#iosDialog2").css("display", "none");
+    }
+    //定时器
+    var targetTime = new Date("2018-08-14 11:05:00");
+    var timerId = countdown(
+
+            function(ts) {
+                $("#day").html(ts.days < 10 ? '0' + ts.days : ts.days);
+                $("#hour").html(ts.hours < 10 ? '0' + ts.hours : ts.hours);
+                $("#minute").html(ts.minutes < 10 ? '0' + ts.minutes : ts.minutes);
+                $("#second").html(ts.seconds < 10 ? '0' + ts.seconds : ts.seconds);
+
+                // TODO: timeout, cleart timerId
+               if (ts.days==0&&ts.hours==0&&ts.minutes==0&&ts.seconds){
+                   switchScene("scene_share_post_data")
+                   $("#reach_time").show();
+                   $("#not_reach_time").hide();
+               }
+                // TODO: timeout, cleart timerId
+             var   a=ts-targetTime
+                console.log(a)
+                if (ts>targetTime){
+                    switchScene("scene_share_post_data")
+                    $("#reach_time").show();
+                    $("#not_reach_time").hide();
+                }
+            },
+            targetTime,
+            countdown.DAYS|countdown.HOURS|countdown.MINUTES|countdown.SECONDS);
+
+    $(".ask_pic").hover(function () {
+        $(".info").css("display","block");
+    },function(){
+        $(".info").css("display","none");
+    });
 </script>
+
+
+<script>
+    //弹幕效果
+    let Barrage = function() {
+        this.data = []
+        this.speed = 1
+        this.list = []
+
+        this.wrapInfo = {
+            el: null,
+            width: 0,
+            children: [],
+        }
+    }
+
+    Barrage.prototype.init = function(selector, options) {
+        this.wrapInfo.el = document.querySelector(selector)
+        this.wrapInfo.children = this.wrapInfo.el.querySelectorAll('.js_barrage_line')
+        this.wrapInfo.width = this.wrapInfo.el.getBoundingClientRect().width
+
+        this.data = options.data
+
+        return this
+    }
+
+    Barrage.prototype.random = function() {
+        return Math.floor(Math.random() * this.wrapInfo.children.length)
+    }
+
+    Barrage.prototype.raf = function(el) {
+        let left = el.dataset.left
+
+        if(left > 0) {
+            left -= this.speed
+
+            el.dataset.left = left
+
+            el.style.transform = `translate(${left}px, 0)`
+
+            window.requestAnimationFrame(() => {
+                this.raf(el)
+            })
+        } else {
+            this.wrapInfo.children[el.dataset.index].removeChild(el)
+        }
+    }
+
+    Barrage.prototype.createElement = function() {
+        let data = this.data.shift()
+
+        let index = this.random()
+
+        let div = document.createElement('div')
+
+        div.className = `div-${index}`
+
+        // div.style.backgroundColor="blue";
+
+        div.style.backgroundImage ="url('../static/images/blue_btn.png')";
+
+        div.style.backgroundSize = "100%,100%";
+
+        div.style.width="60%";
+
+        div.style.height="0.8rem";
+
+        div.style.textAlign="center";
+
+        div.style.transform = `translate(${this.wrapInfo.width}px, 0)`
+
+        div.innerHTML = data.text
+
+        div.dataset.index = index
+
+        div.dataset.left = this.wrapInfo.width
+
+        console.log(index)
+
+        this.wrapInfo.children[index].appendChild(div)
+
+        window.requestAnimationFrame(() => {
+            this.raf(div)
+        })
+
+    }
+
+    Barrage.prototype.start = function() {
+        let timer = null
+
+        timer = setInterval(() => {
+            if(this.data.length > 0) {
+                this.createElement()
+            } else {
+                clearInterval(timer)
+            }
+        }, 1000)
+    }
+
+    let mookData = []
+
+    {{ range .tanmu}}
+        mookData.push({
+            text: `{{map_get .data "word"}}`,
+            index:1
+        })
+        {{ end }}
+
+    new Barrage().init('.js_barrage_wrap', {
+        data: mookData
+    }).start()
+</script>
+
+<script>
+    //点击冒爱心
+    onload = function() {
+        var click_cnt = 0;
+        var $html = document.getElementsByTagName("html")[0];
+        var $body = document.getElementsByTagName("body")[0];
+        $html.onclick = function(e) {
+            console.log(e);
+            var $elem = document.createElement("b");
+            $elem.style.color = "pink";
+            $elem.style.zIndex = 9999;
+            $elem.style.fontSize = "28px";
+            $elem.style.position = "absolute";
+            $elem.style.select = "none";
+            var x = e.pageX;
+            var y = e.pageY;
+            $elem.style.left = (x - 50) + "px";
+            $elem.style.top = (y - 20) + "px";
+            clearInterval(anim);
+            switch (++click_cnt) {
+                case 10:
+                    // $elem.innerText = "(๑•́ ∀ •̀๑)";
+                    $elem.innerText = "❤";
+                    break;
+                default:
+                    $elem.innerText = "❤";
+                    break;
+            }
+            // $elem.style.fontSize = Math.random() * 20 + 8 + "px";
+            $elem.style.fontSize ="1rem";
+            var increase = 0;
+            var anim;
+            setTimeout(function() {
+                anim = setInterval(function() {
+                    if (++increase == 150) {
+                        clearInterval(anim);
+                        $body.removeChild($elem);
+                    }
+                    $elem.style.top = y - 20 - increase + "px";
+                    $elem.style.opacity = (150 - increase) / 120;
+                }, 8);
+            }, 10);
+            $body.appendChild($elem);
+        };
+    };
+</script>
+
+<script>
+
+       ifOpen =function(){
+           debugger
+         return   document.getElementById("weuiAgree").checked
+       }
+</script>
+
+
+
 </html>

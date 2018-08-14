@@ -9,3 +9,14 @@ type Node struct {
 	ImageUrl   string `json:"imageurl";`
 	Addr   string `json:"addr";`
 }
+
+type Pay struct {
+	Paid bool `json:"paid"`
+	Upload_error  bool  `json:"upload_error"`
+	From string  `json:"from"`
+	To string  `json:"to"`
+	Word string  `json:"word"`
+	Success bool `json:"success"`
+	EthAddr string `json:"ethaddr"`
+	Height string `json:"height"`
+}

@@ -8,6 +8,11 @@ import (
 	"qixijie/db"
 	"qixijie/model"
 	"time"
+	"net/http"
+	"strings"
+	"crypto/sha1"
+	"io/ioutil"
+	"math/rand"
 )
 
 var mongp = util.P{}
@@ -27,6 +32,11 @@ type MainController struct {
 
 //把表白信息和图片保存到数据库
 func (c *MainController) UpImageAndMessage() {
+	defer func() {
+		if err := recover(); err != nil {
+			c.Redirect("http://chengyanfeng.natapp1.cc/redirecturl", 302)
+		}
+	}()
 	data := model.Node{}
 	userdata := mongp["userdata"]
 	docm2string := util.ToString(userdata)
@@ -35,44 +45,59 @@ func (c *MainController) UpImageAndMessage() {
 	data.From = c.GetString("userform")
 	data.To = c.GetString("touser")
 	data.Word = c.GetString("word")
+	ifOpenShow:= c.GetString("ifOpenShow")
 	fmt.Print(medId)
 	data.Timestamp = util.ToString(time.Now().Unix())
-	/*imagePath := util.GetImageFromCould(medId, "./image/")*/
-	imagePath := "aaaa"
+	magePath := util.GetImageFromCould(medId, "./image/")
+	imagePath := magePath
 	data.ImageUrl = imagePath
-	ethaddr, payId:= util.GetEthAddress()
+	ethaddr, payId := util.GetEthAddress()
 	data.Addr = ethaddr
 	openid := c.GetString("openid")
 	mongdb.Query = &util.P{"userOpenId": openid}
 	count := mongdb.Count()
-	if count <10{
-		mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "1", "Addr": data.Addr,})
-		c.Data["json"]=map[string]interface{}{"userOpenId":openid,"addr":data.Addr,"payId":payId,"isPay":1,"code":0}
-		c.ServeJSON()
+	if count < 100 {
+		//数据上链
+		ethaddr := UpMessage(data.From + data.Word + data.To)
+		//获取数据高度
+		height := getQurHig()
+		if height==""{
+			height="0"
+		}
+		if ethaddr != "false" {
+			mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "1", "addr": data.Addr, "ethaddr": ethaddr, "height": height,"ifOpenShow":ifOpenShow})
+			c.Data["json"] = map[string]interface{}{"userOpenId": openid, "addr": data.Addr, "payId": payId, "isPay": 1, "code": 0, "ethaddr": ethaddr, "height": height}
+			c.ServeJSON()
+		}
 	} else {
 		ifshare, time := getShareInfo(openid)
 		if ifshare == "Yes" && time == "0" {
-			mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "1", "addr": data.Addr})
-			c.Data["userOpenId"]=openid
-			c.Data["Addr"]=data.Addr
-			c.Data["payId"]=payId
-			c.Data["isPay"]=1
-			c.TplName="share.html"
-		} else {
-			mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "0", "addr": data.Addr})
-			c.Data["userOpenId"]=openid
-			c.Data["Addr"]=data.Addr
-			c.Data["payId"]=payId
-			c.Data["isPay"]=0
-			c.TplName="share.html"
+			//上链
+			ethaddr := UpMessage(data.From + data.Word + data.To)
+			//获取区块高度
+			height := getQurHig()
+			if height==""{
+				height="0"
 			}
+			if ethaddr != "false" {
+				mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "1", "addr": data.Addr, "ethaddr": ethaddr, "height": height,"ifOpenShow":ifOpenShow})
+				//更新用户分享信息
+				SetShareInfo(openid)
+				c.Data["json"] = map[string]interface{}{"userOpenId": openid, "addr": data.Addr, "payId": payId, "isPay": 1, "code": 0, "ethaddr": ethaddr, "height": height}
+				c.ServeJSON()
+			}
+		} else {
+			mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "0", "addr": data.Addr,"ifOpenShow":ifOpenShow})
+			c.Data["json"] = map[string]interface{}{"userOpenId": openid, "addr": data.Addr, "payId": payId, "isPay": 0, "code": 0}
+			c.ServeJSON()
+		}
 	}
 }
 
 //获取所有表白信息
 func (c *MainController) GetUserMessage() {
-	getMessage("", "")
-	c.Data["json"] = getMessage("", "")
+	getMessage("", "","")
+	c.Data["json"] = getMessage("", "","")
 	c.ServeJSON()
 }
 
@@ -87,24 +112,37 @@ func (c *MainController) Redirecturl() {
 		"&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect"
 	c.Redirect(url, 302)
 
-
 }
 
 //由微信服务器跳转回来的rul
 func (c *MainController) Index() {
+	defer func() {
+		if err := recover(); err != nil {
+			c.Redirect("http://chengyanfeng.natapp1.cc/redirecturl", 302)
+		}
+	}()
 	Addr := c.GetString("addr")
 	ShareOpenid := c.GetString("shareopenid")
+	//没有openid 就进主页
 	if util.IsEmpty(ShareOpenid) {
+		//获取滚动信息,获取上墙信息，只有isOpenShow 为true时可以
+		AllUp := getMessage("", "","true")
+		mp:=getShowOpenMessage(*AllUp)
+
+		c.Data["tanmu"]=mp
 		user := &util.P{}
 		docm := mongp["userinfo"]
 		docm2string := util.ToString(docm)
 		mongdb := db.D(docm2string, mongp)
 
 		code := c.GetString("code")
-		if code == "" {
-			c.Ctx.WriteString("请用微信登陆")
+		if code == "" || code == "undefined" {
+			c.Redirect("/redirecturl", 302)
 		}
 		userinfo := util.GetUserInfo(code)
+		if userinfo == nil {
+			c.Redirect("/redirecturl", 302)
+		}
 		(*user)["country"] = (*userinfo)["country"].(string)
 		(*user)["city"] = (*userinfo)["city"].(string)
 		(*user)["userOpenId"] = (*userinfo)["openid"].(string)
@@ -117,23 +155,61 @@ func (c *MainController) Index() {
 			(*user)["usersharetime"] = "0"
 			mongdb.Add(user)
 		}
+		nodelist := []model.Node{}
+		openid := (*userinfo)["openid"].(string)
+		p := getMessage(openid, "","")
+		for _, v := range *p {
+			node := model.Node{}
+			datap := v["data"]
+			data := datap.(util.P)
+			node.From = util.ToString(data["from"])
+			node.To = util.ToString(data["to"])
+			node.Word = util.ToString(data["word"])
+			node.Timestamp = util.ToString(data["timestamp"])
+			nodelist = append(nodelist, node)
+		}
 		c.Data["openid"] = (*userinfo)["openid"].(string)
-		c.Data["oder"]="first"
+		c.Data["nodelist"] = nodelist
 		c.TplName = "home.html"
 	} else {
-
-		p := getMessage(ShareOpenid, Addr)
-		data:=(*p)[0]["data"]
-		datap:=data.(util.P)
-		from:=datap["from"]
-		to:=datap["to"]
-		word:=datap["word"]
-		c.Data["from"]=from
-		c.Data["to"]=to
-		c.Data["word"]=word
-		c.Data["oder"]="share"
+		p := getMessage(ShareOpenid, Addr,"")
+		data := (*p)[0]["data"]
+		datap := data.(util.P)
+		from := datap["from"]
+		to := datap["to"]
+		word := datap["word"]
+		imageurl:=datap["imageurl"]
+		heigh:=(*p)[0]["height"]
+		c.Data["imageurl"]=imageurl
+		c.Data["from"] = from
+		c.Data["to"] = to
+		c.Data["word"] = word
+		c.Data["height"] = heigh
+		c.Data["oder"] = "share"
+		fmt.Print(timeoder())
+		c.Data["isReachTime"] = timeoder()
 		c.TplName = "home.html"
 	}
+}
+
+// 获取历史数据---暂时无用
+func (c *MainController) GetHistoryMessage() {
+	nodelist := []model.Node{}
+	openid := c.GetString("openid")
+	p := getMessage(openid, "","")
+	for _, v := range *p {
+		node := model.Node{}
+		datap := v["data"]
+		data := datap.(util.P)
+		node.From = util.ToString(data["from"])
+		node.To = util.ToString(data["to"])
+		node.Word = util.ToString(data["word"])
+		node.Timestamp = util.ToString(data["timestamp"])
+		nodelist = append(nodelist, node)
+	}
+	c.Data["openid"] = openid
+	c.Data["nodelist"] = nodelist
+	c.TplName = "home.html"
 }
 
 //微信获取的转发token
@@ -151,15 +227,19 @@ func (c *MainController) GetTicker() {
 }
 
 //获取表白信息
-func getMessage(openid, addr string) (p *[]util.P) {
+func getMessage(openid, addr,isOpenShow string) (p *[]util.P) {
+
 	userdata := mongp["userdata"]
 	docm2string := util.ToString(userdata)
 	mongdb := db.D(docm2string, mongp)
-	if  len(addr) == 0 {
-		p = mongdb.Find(util.P{"userOpenId": openid}).All()
+	if len(addr) == 0&&len(openid)>0 {
+		p = mongdb.Find(util.P{"userOpenId": openid, "IfPay": "1"}).All()
 		return p
-	} else {
-		p = mongdb.Find(util.P{"userOpenId": openid, "Addr": addr}).All()
+	} else if len(addr) >0&&len(openid)>0   {
+		p = mongdb.Find(util.P{"userOpenId": openid, "addr": addr}).All()
+		return p
+	}else {
+		p = mongdb.Find(util.P{"ifOpenShow": isOpenShow}).All()
 		return p
 	}
 
@@ -174,4 +254,184 @@ func getShareInfo(useropenid string) (ifshare, usersharetime string) {
 	ifshare = (*p)["ifshare"].(string)
 	usersharetime = (*p)["usersharetime"].(string)
 	return
+}
+
+//设置已经用过分享的机会了
+func SetShareInfo(useropenid string) (ifshare, usersharetime string) {
+	docm := mongp["userinfo"]
+	docm2string := util.ToString(docm)
+	mongdb := db.D(docm2string, mongp)
+	err := mongdb.Upsert(util.P{"userOpenId": useropenid}, util.P{"usersharetime": "1"})
+	if err == nil {
+	}
+
+	return
+}
+
+//获取微信支付的pay_id
+func (c *MainController) GetWxPayId() {
+	xml := util.GetWXpay_id("osy0OwaMZDR7dxcMcfUPh750GBqA")
+	c.Data["json"] = xml
+	c.ServeJSON()
+}
+
+//分享成功，分享标签为Yes
+func (c *MainController) Sharesuccess() {
+	openid := c.GetString("openid")
+
+	docm := mongp["userinfo"]
+	docm2string := util.ToString(docm)
+	mongdb := db.D(docm2string, mongp)
+	err := mongdb.Upsert(util.P{"userOpenId": openid}, util.P{"ifshare": "Yes"})
+	if err == nil {
+		c.Ctx.WriteString("success")
+	} else {
+
+		c.Ctx.WriteString("false")
+	}
+}
+
+//上链
+func UpMessage(data string) string {
+
+	APP_KEY := "5b6bfaf6a6dd527199fce0c1"
+	APP_SECRECT := "f3f0fad23d0803d01619ad06b9cd1469c9ac61a37d794d76cafd5247c272fe38259a07784dfde3cad9e6a6a55340ed17";
+	sign := fmt.Sprintf("%x", sha1.Sum([]byte(APP_KEY+data+APP_SECRECT)))
+	mp := util.P{}
+	mp["data"] = data
+	mp["app_key"] = APP_KEY
+	mp["sign"] = sign
+	response, _ := http.Post("http://chromeapi.genyuanlian.com:9005/api/upload/org", "application/json;charset=utf-8", strings.NewReader(util.JsonEncode(mp)))
+	defer response.Body.Close()
+	eth_body, _ := ioutil.ReadAll(response.Body)
+	p := *util.JsonDecode([]byte(string(eth_body)))
+	flag := p["code"].(float64)
+
+	if flag == 0 {
+		data := p["data"].([]interface{})
+		s := data[0].(string)
+		return s
+	} else {
+		return "false"
+	}
+}
+
+//查询支付状态，如果支付则上链和更新数据支付信息
+func (c *MainController) CheckPay() {
+	payid := c.GetString("payid")
+	openid := c.GetString("openid")
+	addr := c.GetString("addr")
+	fla := util.CheckIfPay(payid)
+	if fla {
+
+		from, to, word, ethaddr, height := setUpMessage(openid, addr)
+		pay := model.Pay{}
+		pay.Paid = true
+		pay.Upload_error = false
+		pay.From = from
+		pay.To = to
+		pay.Word = word
+		pay.Height = height
+		pay.EthAddr = ethaddr
+		if len(ethaddr) > 0 {
+			pay.Success = true
+		}
+		c.Data["json"] = map[string]interface{}{"code": 0, "data": pay}
+		c.ServeJSON()
+
+	} else {
+		c.Data["json"] = map[string]interface{}{"code": 1, "ethaddr": ""}
+		c.ServeJSON()
+	}
+}
+
+//上链和更新数据库的支付信息
+func setUpMessage(openid, addr string) (from, to, word, ethaddr, height string) {
+	docm := mongp["userdata"]
+	docm2string := util.ToString(docm)
+	mongdb := db.D(docm2string, mongp)
+	p := mongdb.Find(util.P{"userOpenId": openid, "addr": addr}).One()
+	node := (*p)["data"]
+	nodep := node.(util.P)
+	from = nodep["from"].(string)
+	to = nodep["to"].(string)
+	word = nodep["word"].(string)
+	data := from + to + word
+	//上链
+	ethaddr = UpMessage(data)
+	//获取区块高度
+	height = getQurHig()
+	if height==""{
+		height="0"
+	}
+	//更新数据库，支付字段，返回的区块链地址值，区块地址
+	err := mongdb.Upsert(util.P{"userOpenId": openid, "addr": addr}, util.P{"ethaddr": ethaddr, "IfPay": "1", "height": height})
+	if err == nil {
+
+		return from, to, word, ethaddr, height
+	} else {
+		mongdb.Upsert(util.P{"userOpenId": openid, "addr": addr}, util.P{"ethaddr": ethaddr, "IfPay": "1", "height": height})
+		return from, to, data, ethaddr, height
+	}
+
+}
+
+//获取区块高度
+func getQurHig() string {
+	defer func() {
+		if err := recover(); err != nil {
+
+			fmt.Print("获取高度失败")
+
+		}
+
+	}()
+	retrnbody, _ := http.Get("http://chromeapi.genyuanlian.com:3001/api/status?q=getInfo")
+	defer retrnbody.Body.Close()
+	eth_body, _ := ioutil.ReadAll(retrnbody.Body)
+	p := *util.JsonDecode([]byte(string(eth_body)))
+	info := p["info"].(interface{})
+	data := info.(map[string]interface{})
+	blocks := util.ToString(data["blocks"])
+	return util.ToString(blocks)
+}
+//获取九个数据
+func getShowOpenMessage(AllUp[]util.P) (mpp []util.P){
+
+	if len(AllUp)<9{
+		lenth:=9-len(AllUp)
+		for i:=1;i<lenth;i++{
+		node:=	util.P{}
+		node["word"]="dsafewfew"
+		p:=	util.P{"data":node}
+			AllUp=append(AllUp,p)
+
+		}
+		return AllUp
+	}else {
+		mp:=[]util.P{}
+	 for i:=0;i<9;i++{
+		mp= append(mp, AllUp[rand.Intn(len(AllUp))])
+
+	 }
+		return mp
+	}
+}
+
+//获取时间对比
+func timeoder()int{
+	nowtime:=time.Now()
+	nowtimenuix:=nowtime.Unix()
+	the_time, err := time.ParseInLocation("2006-01-02", "2018-08-17", time.Local)
+	if err == nil {
+		unix_time := the_time.Unix()
+		if nowtimenuix<unix_time{
+			return 0
+		}else {
+			return 1
+		}
+	}else {
+		return 1
+	}
+
 }

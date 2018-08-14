@@ -12,6 +12,7 @@ import (
 	"crypto/md5"
 	"sort"
 	"encoding/json"
+	"lian/util"
 )
 
 /******************************-----------下面是获取登陆的token-----------*************************/
@@ -23,7 +24,11 @@ func GetTokenAndOpenid(code string) (access_token, openid string) {
 	defer response_token.Body.Close()
 
 	token_body, _ := ioutil.ReadAll(response_token.Body)
+
 	p := *JsonDecode([]byte(string(token_body)))
+	if p["errcode"] != nil {
+		return "1", ""
+	}
 	refresh_token := p["refresh_token"].(string)
 	//直接通过获取的token获取刷新token
 	refresh_token_token, _ := http.Get("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=" + def.WEIXINAPPID + "&grant_type=refresh_token&refresh_token=" + refresh_token)
@@ -61,6 +66,10 @@ func checkToken(access_token, openid string) bool {
 //获取微信登陆用户信息
 func GetUserInfo(code string) (p *map[string]interface{}) {
 	access_token, openid := GetTokenAndOpenid(code)
+	if access_token == "1" {
+
+		return
+	}
 	userInfo, _ := http.Get("https://api.weixin.qq.com/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN")
 	defer userInfo.Body.Close()
 	userInfo_body, _ := ioutil.ReadAll(userInfo.Body)
@@ -113,6 +122,7 @@ func GetRandomString() string {
 func MapToxml(userMap *StringMap) string {
 	(*userMap)["sign"] = GetSign(userMap)
 	buf, _ := xml.Marshal(StringMap(*userMap))
+
 	xml := string(buf)
 	xml = strings.Replace(xml, "StringMap", "xml", -1)
 	return xml
@@ -130,7 +140,7 @@ func GetSign(p *StringMap) string {
 	for _, v := range strs {
 		sign = sign + v + "=" + (*p)[v] + "&"
 	}
-	sign = sign + "key=" + def.WEIXINKEY
+	sign = sign + "key=" + def.WEIXINAPPKEY
 	fmt.Print(sign)
 	md.Write([]byte(sign))
 	sign = fmt.Sprintf("%x", md5.Sum([]byte(sign)))
@@ -153,13 +163,16 @@ func GetImageFromCould(mediaId, url string) (imagePath string) {
 	token := ToString(S("forword_token"))
 	retrnbody, _ := http.Get("https://api.weixin.qq.com/cgi-bin/media/get?access_token=" + token + "&media_id=" + mediaId)
 	imageName := retrnbody.Header.Get("Content-Disposition")
+	if imagePath==""{
+		return "保存图片失败"
+	}
 	imageName = strings.Split(imageName, "=")[1]
 	imageName = strings.Replace(imageName, "\"", "", -1)
 	token_body, _ := ioutil.ReadAll(retrnbody.Body)
 	URL := url + imageName
 	flag := WriteFile(URL, token_body)
 	if flag {
-		return URL + imageName
+		return URL
 	} else {
 		return "保存图片失败"
 	}
@@ -184,22 +197,45 @@ func GetEthAddress() (ethAddress, payid string) {
 	}
 }
 
-//查询是否支付
+//查询是否支付，这是TSTK,不是微信的支付。暂时放到工具类中
 func CheckIfPay(payid string) bool {
-	retrnbody, _ := http.Get(" 态： http://service.genyuanlian.com/api/bstk/pay/check?payid="+payid)
+	retrnbody, _ := http.Get("http://service.genyuanlian.com/api/bstk/pay/check?payid=" + payid)
 	defer retrnbody.Body.Close()
 	eth_body, _ := ioutil.ReadAll(retrnbody.Body)
 	p := *JsonDecode([]byte(string(eth_body)))
 	flag := p["isOk"].(bool)
 	if flag {
 		a := p["data"].(map[string]interface{})
-		paidAmount:=a["paidAmount"].(string)
-		if ToInt(paidAmount) >0{
+		paidAmount := a["paidAmount"].(string)
+		if util.ToFloat(paidAmount) > 0 {
 			return true
-		}else {
+		} else {
 			return false
 		}
-		} else {
+	} else {
 		return false
 	}
+}
+
+//微信支付
+func GetWXpay_id(openid string) (xml string) {
+	userMap := &StringMap{}
+	(*userMap)["appid"] = def.WEIXINAPPID
+	(*userMap)["mch_id"] = def.WEIXINMCH_ID
+	(*userMap)["nonce_str"] = GetRandomString()
+	(*userMap)["body"] = "1212121"
+	(*userMap)["out_trade_no"] = "123456"
+	(*userMap)["total_fee"] = "1"
+	(*userMap)["spbill_create_ip"] = "123.12.12.123"
+	(*userMap)["trade_type"] = "JSAPI"
+	(*userMap)["notify_url"] = "http://www.weixin.qq.com/wxpay/pay.php"
+	(*userMap)["sign_type"] = "MD5"
+	(*userMap)["openid"] = openid
+
+	xml = MapToxml(userMap)
+	response, _ := http.Post("https://api.mch.weixin.qq.com/sandbox/pay/unifiedorder", "application/xml;charset=utf-8", strings.NewReader(xml))
+	defer response.Body.Close()
+	token_body, _ := ioutil.ReadAll(response.Body)
+	xml = string(token_body)
+	return xml
 }
