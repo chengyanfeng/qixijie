@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="/static/css/tanabata/app.css">
     <link rel="stylesheet" href="/static/css/common.css">
     <script src='/static/js/weixin.js'></script>
+    <script src='/static/js/lunpan.js'></script>
+
 
 </head>
 
@@ -164,14 +166,17 @@
         </div>
     </div>
 </div>
-<div class="luck_draw"  onclick="hideLuck()">
+
+<div id="luck_draw"  class="luck_draw" >
 </div>
-<p class="luck_tip">
+<p  id="luck_tip" class="luck_tip">
     <img src="./static/images/luckTip.png">
     <span class="go_luck" id="go_draw">
         <img src="./static/images/goLuck.png">
     </span>
 </p>
+
+
 <div id="scene_pay_wait" class="container">
     <div class="weui-msg">
         <div class="weui-msg__icon-area"><i class="weui-icon-waiting weui-icon_msg" style="color:#fd748d"></i></div>
@@ -184,7 +189,7 @@
             </div>
 
             <p class="weui-msg__desc" id="payExpire">支付于2018-08-10 16:24失效</p>
-            <p><a href="javascript:copypayId();" class="weui-btn_primary copy_addr">复制地址到剪贴板</a></p>
+            <p class="copy" style="line-height: 0.8rem"><a href="javascript:copypayId();" class="weui-btn_primary copy_addr">复制地址到剪贴板</a></p>
         </div>
         <div class="weui-msg__opr-area">
             <p class="weui-btn-area">
@@ -237,7 +242,7 @@
         </div>
         <div class="page-hd result">
             <p class="page__title result_tip">上链成功</p>
-            <p class="page__title result_count">已有<span id="witness"></span>人见证了你的爱@</p>
+            <p class="page__title result_count">已有<span id="witness"></span>人见证了你的爱<span class="ask_pic" ></span></p>
         </div>
         <div class="page__hd">
             <p id="up_to"></p>
@@ -252,7 +257,12 @@
         </div>
     </div>
 </div>
-
+<div id="scene_show_prize" class="container">
+    <div style="width: 100%;height: auto;position: absolute;top:0;bottom:0;background: black;opacity: 0.6;"></div>
+    <div id="box">
+        <div id="zhizhen"></div>
+    </div>
+</div>
 <div id="scene_share_post_data" class="container">
     <div class="page article js_show">
         <div class="letter_bg_second"></div>
@@ -347,6 +357,8 @@
         </div>
     </div>
 </div>
+
+
 
 </body>
 <script type="text/javascript">
@@ -468,6 +480,7 @@
                     ifOpenShow:ifOpenShow
 
                 }, function (res, status) {
+
                     loadingStop();
                     console.log('post res:', res, status);
                     if (res.code !== 0) {
@@ -505,21 +518,13 @@
                                 checkPay(true);
                             }, 5000);
                         } else {
-                            addr = res.addr
-                            shareUrl = 'http://chengyanfeng.natapp1.cc/index?shareopenid=' + openid + '&addr=' + addr
-                            //重新初始化微信分享
-                            share()
-                            $("#back_data_from").val($("#data_from").val())
-                            $("#back_data_from").attr("readonly", "readonly");
-                            $("#back_data_to").val($("#data_to").val())
-                            $("#back_data_to").attr("readonly", "readonly");
-                            $("#back_textarea").val($("#data_content").val())
-                            $("#back_textarea").attr("readonly", "readonly");
-
-
-                            $("#witness").html(res.height);
-                            switchScene('scene_upload_success');
+                            //官方待支付后肯定会有高度和地址
+                            //地址和高度赋值
+                            addr=res.addr
+                            height=res.height
+                            //显示官方付款
                             $("#iosDialog2").css("display", "block");
+
                         }
                     }
                 });
@@ -547,18 +552,17 @@
                 } else if (res.data.upload_error) {
                     weui.toast('未知错误，请联系客服', 2000);
                 } else if (res.data.success) {
+                    //分享的页面初始化加载
                     shareUrl = 'http://chengyanfeng.natapp1.cc/index?shareopenid=' + openid + '&addr=' + addr
                     share();
-                    $("#back_data_from").val(res.data.from);
-                    $("#back_data_from").attr("readonly", "readonly");
-                    $("#back_data_to").val(res.data.to);
-                    $("#back_data_to").attr("readonly", "readonly");
-                    $("#back_textarea").val(res.data.word);
-                    $("#back_textarea").attr("readonly", "readonly");
                     //设置高度
                     $("#witness").html(res.data.height);
-                    switchScene('scene_upload_success');
+                    //显示轮盘的花旦
+                    payfortime=1
+                    $("#luck_draw").css("display","block")
+                    $("#luck_tip").css("display","block")
                     clearInterval(payCheckInterval)
+
                 } else {
                     // do nothing
                 }
@@ -567,17 +571,32 @@
         });
     }
 
+    //跳转到支付完成，需要分享的页面
+   var  sharePage=function(){
+        shareUrl = 'http://chengyanfeng.natapp1.cc/index?shareopenid=' + openid + '&addr=' + addr
+        //重新初始化微信分享
+        share()
+       //回显和不可编辑
+        $("#back_data_from").val($("#data_from").val())
+        $("#back_data_from").attr("readonly", "readonly");
+        $("#back_data_to").val($("#data_to").val())
+        $("#back_data_to").attr("readonly", "readonly");
+        $("#back_textarea").val($("#data_content").val())
+        $("#back_textarea").attr("readonly", "readonly");
+        $("#witness").html(height);
+       switchScene('scene_upload_success');
+   }
+
+
+
 
     function cancelPay() {
         loadingStart();
-        $.post("/wlap/api/paybastk_cancel?appid=tanabata", {
-            uid: ''
-        }, function (res, status) {
-            loadingStop();
+        loadingStop();
             weui.toast('支付单已取消', 2000);
             // switch to upload
             switchScene('scene_filldata');
-        });
+        clearInterval(payCheckInterval)
     }
 
 
@@ -659,19 +678,32 @@
         }, 10);
         timers.push(timer);
     }
-
+        //初始化元素，变化立即加载
     $(document).ready(function () {
+        //判断返回的share
         if (oder == "share") {
             switchScene('scene_share_post_data');
             ifshowdata()
         }
+
     })
+
+
+    //官方代付页面关闭
     var bsthide=function () {
+        //关闭代付页面
         $("#iosDialog2").css("display", "none");
+        //显示轮盘的花旦
+        payfortime=1
+        $("#luck_draw").css("display","block")
+        $("#luck_tip").css("display","block")
     }
-    //定时器
-    var targetTime = new Date("2018-08-14 11:05:00");
-    var timerId = countdown(
+
+
+
+        //定时器
+      var targetTime = new Date("2018-08-14 12:00:00");
+       var timerId = countdown(
 
             function(ts) {
                 $("#day").html(ts.days < 10 ? '0' + ts.days : ts.days);
@@ -687,7 +719,6 @@
                }
                 // TODO: timeout, cleart timerId
              var   a=ts-targetTime
-                console.log(a)
                 if (ts>targetTime){
                     switchScene("scene_share_post_data")
                     $("#reach_time").show();
@@ -816,7 +847,7 @@
     }).start()
 </script>
 
-<script>
+{{/*<script>
     //点击冒爱心
     onload = function() {
         var click_cnt = 0;
@@ -861,16 +892,38 @@
             $body.appendChild($elem);
         };
     };
-</script>
+</script>*/}}
 
 <script>
-
-       ifOpen =function(){
+    ifOpen =function(){
            debugger
          return   document.getElementById("weuiAgree").checked
        }
 </script>
 
+<script type="text/javascript">
+    //显示中奖的页面，隐藏开启中奖的花旦
+    $("#go_draw").click(function(){
+        debugger
+        $("#luck_draw").css("display","none")
+        $("#luck_tip").css("display","none")
+        switchScene('scene_show_prize');
+    });
 
+//抽奖后的ajax 发送
+     var ajaxprize=function(prizesend,number,name){
+         $.post("/prize",
+                 {
+                     openid: openid,
+                     prize:prizesend,
+                     number:number,
+                     name:name
+                 }, function (res, status) {
+                    //无论成功都跳转到下一页
+                     sharePage()
+                 }
+         )
+     }
+</script>
 
 </html>

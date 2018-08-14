@@ -3,6 +3,7 @@ var imagelocalIds;
 var shareUrl
 var addr
 var medId
+var height
 //这个是获取用户的信息
 $.ajax({
     async: false,

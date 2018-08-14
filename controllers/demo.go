@@ -24,6 +24,9 @@ func init() {
 	mongp["password"] = beego.AppConfig.String("mongodbpass")
 	mongp["userinfo"] = beego.AppConfig.String("mongodbdocm")
 	mongp["userdata"] = beego.AppConfig.String("mongodbdata")
+	mongp["userprize"] = beego.AppConfig.String("mongodbprize")
+
+
 }
 
 type MainController struct {
@@ -56,7 +59,7 @@ func (c *MainController) UpImageAndMessage() {
 	openid := c.GetString("openid")
 	mongdb.Query = &util.P{"userOpenId": openid}
 	count := mongdb.Count()
-	if count < 100 {
+	if count < 1 {
 		//数据上链
 		ethaddr := UpMessage(data.From + data.Word + data.To)
 		//获取数据高度
@@ -345,6 +348,25 @@ func (c *MainController) CheckPay() {
 	}
 }
 
+//抽奖的接口
+func (c *MainController)Prize(){
+	openid:=c.GetString("openid")
+	prize:=c.GetString("prize")
+	time:=time.Now().Unix()
+	docm :=mongp["userprize"]
+	docm2string := util.ToString(docm)
+	mongdb := db.D(docm2string, mongp)
+	err:=mongdb.Add(util.P{"userOpenId":openid,"prize":prize,"timestamp":time})
+	if err==nil{
+		c.Data["json"]=util.P{"code":0}
+		c.ServeJSON()
+	}else {
+		c.Data["json"]=util.P{"code":1}
+		c.ServeJSON()
+	}
+}
+
+
 //上链和更新数据库的支付信息
 func setUpMessage(openid, addr string) (from, to, word, ethaddr, height string) {
 	docm := mongp["userdata"]
@@ -422,7 +444,7 @@ func getShowOpenMessage(AllUp[]util.P) (mpp []util.P){
 func timeoder()int{
 	nowtime:=time.Now()
 	nowtimenuix:=nowtime.Unix()
-	the_time, err := time.ParseInLocation("2006-01-02", "2018-08-17", time.Local)
+	the_time, err := time.ParseInLocation("2006-01-02", "2018-08-14:12:00:00", time.Local)
 	if err == nil {
 		unix_time := the_time.Unix()
 		if nowtimenuix<unix_time{
@@ -435,3 +457,5 @@ func timeoder()int{
 	}
 
 }
+
+

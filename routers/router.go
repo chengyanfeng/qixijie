@@ -17,6 +17,9 @@ func init() {
 
 	//分享成功后通知后端添加一次机会
 	beego.Router("/sharesucess", &controllers.MainController{}, "get:Sharesuccess")
+	//更新奖项记录
+	beego.Router("/prize", &controllers.MainController{}, "post:Prize")
+
 	//查看支付状态
 	beego.Router("/checkpay", &controllers.MainController{}, "*:CheckPay")
 	beego.Router("/share/get_ticker", &controllers.MainController{}, "get:GetTicker")
