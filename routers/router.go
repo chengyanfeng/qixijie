@@ -14,7 +14,7 @@ func init() {
 	//分享接口
 	beego.Router("/seven_night/upimageAndmessage", &controllers.MainController{}, "*:UpImageAndMessage")
 	beego.Router("/seven_night/getpayid", &controllers.MainController{}, "*:GetWxPayId")
-
+	beego.Router("/seven_night/gethistorymessage", &controllers.MainController{}, "post:GetHistoryMessage")
 	//分享成功后通知后端添加一次机会
 	beego.Router("/seven_night/sharesucess", &controllers.MainController{}, "get:Sharesuccess")
 	//更新奖项记录

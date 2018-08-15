@@ -1,6 +1,6 @@
 var ticket;
 var imagelocalIds;
-var shareUrl="http://service.genyuanlian.com/seven_nightredirecturl"
+var shareUrl="http://service.genyuanlian.com/seven_night/redirecturl"
 var addr
 var medId
 var height

@@ -165,17 +165,22 @@ func (c *MainController) Index() {
 			(*user)["usersharetime"] = "0"
 			mongdb.Add(user)
 		}
-		nodelist := []model.Node{}
+		nodelist := []model.History{}
 		openid := (*userinfo)["openid"].(string)
 		p := getMessage(openid, "", "")
 		for _, v := range *p {
-			node := model.Node{}
+			node := model.History{}
 			datap := v["data"]
+			hight := util.ToString(v["height"])
 			data := datap.(util.P)
 			node.From = util.ToString(data["from"])
+			node.ImageUrl = util.ToString(data["imageurl"])
 			node.To = util.ToString(data["to"])
 			node.Word = util.ToString(data["word"])
+			node.Addr = util.ToString(data["addr"])
 			node.Timestamp = util.ToString(data["timestamp"])
+			node.EthAddr = util.ToString(v["ethaddr"])
+			node.Height = hight
 			nodelist = append(nodelist, node)
 		}
 		c.Data["openid"] = (*userinfo)["openid"].(string)
@@ -184,6 +189,7 @@ func (c *MainController) Index() {
 	} else {
 		p := getMessage(ShareOpenid, Addr, "")
 		data := (*p)[0]["data"]
+		url:="https://block.genyuanlian.com/tx/"+util.ToString((*p)[0]["ethaddr"])
 		datap := data.(util.P)
 		from := datap["from"]
 		to := datap["to"]
@@ -193,10 +199,10 @@ func (c *MainController) Index() {
 		c.Data["imageurl"] = imageurl
 		c.Data["from"] = from
 		c.Data["to"] = to
+		c.Data["hrefurl"]=url
 		c.Data["word"] = word
 		c.Data["height"] = heigh
 		c.Data["oder"] = "share"
-		fmt.Print(timeoder())
 		c.Data["isReachTime"] = timeoder()
 		c.TplName = "home.html"
 	}
@@ -452,7 +458,7 @@ func getShowOpenMessage(AllUp []util.P) (mpp []util.P) {
 func timeoder() int {
 	nowtime := time.Now()
 	nowtimenuix := nowtime.Unix()
-	the_time, err := time.ParseInLocation("2006-01-02 15:04:05", "2018-08-15 16:00:00", time.Local)
+	the_time, err := time.ParseInLocation("2006-01-02 15:04:05", "2018-08-15 17:00:00", time.Local)
 	if err == nil {
 		unix_time := the_time.Unix()
 		if nowtimenuix < unix_time {

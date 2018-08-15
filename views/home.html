@@ -83,11 +83,11 @@
                                                                 placeholder="亲爱的"
                                                                 id="data_to">
                                         </p>
-                                        <span class="picture" id="chooseImage" onclick="chooseimge()"><img src="" id="updateimg" alt="可上传"></span>
+                                        <span class="picture" id="chooseImage" onclick="chooseimge()"><img src="./static/images/my2.png" id="updateimg"></span>
                                     </a>
                                     <div class="weui_cell">
                                         <div class="weui_cell_bd weui_cell_primary">
-                                        <textarea class="weui_textarea" placeholder="表白文字" rows="3"
+                                        <textarea class="weui_textarea" placeholder="Hi！快来写下你想对TA说的话吧~" rows="3"
                                                   maxlength="200" id="data_content"></textarea>
                                         </div>
                                     </div>
@@ -126,17 +126,24 @@
                 <div class="weui-panel__bd">
 
                     <div class="weui-media-box weui-media-box_text " id="historyData">
-                    {{if .nodelist }}
-                    {{range .nodelist }}
-                    <div class="weui-media-box weui-media-box_text record_content">
 
-                        <p class="weui-media-box__desc say_word">{{ .Word}}</p>
-                        <label style="text-align: right">
-                            <p class="to_lover">{{ .To}}</p>
-                        </label>
-                    </div>
+                    {{if .nodelist }}
+                    {{range $k,$v:= .nodelist }}
+                        <div class="weui-media-box weui-media-box_text record_content" id="forEach{{$k}}">
+                            <p type="hidden" data-value="{{ $v.EthAddr}}" name="ethaddr" id="historyEthaddr{{$k}}"></p>
+                            <p type="hidden" data-value="{{ $v.Height}}" name="height" id="historyHeight{{$k}}"></p>
+                            <p type="hidden" data-value="{{ $v.ImageUrl}}" name="imageurl" id="historyImageurl{{$k}}"></p>
+
+                            <p type="hidden" data-value="{{ $v.From}}" name="from" id="historyFrom{{$k}}"></p>
+                            <p type="hidden" data-value="{{ $v.Addr}}" name="addr" id="historyAddr{{$k}}"></p>
+                            <p class="weui-media-box__desc say_word" data-value="{{ $v.Word}}" id="historyWord{{$k}}">{{ $v.Word}}</p>
+                            <label for="weuiAgree" class="weui-agree" style="text-align: right">
+                                <p class="weui-media-box__title to_lover" data-value="{{ $v.To}}" id="historyTo{{$k}}">{{ $v.To}}</p>
+                            </label>
+                        </div>
                     {{end }}
                     {{else}}
+
                         <p class="weui-media-box__desc say_word">Hi，你知道吗？这是我想对你说的话!其实我想大声告诉你，你是我的唯一，唯一的永恒</p>
                         <label for="weuiAgree" class="weui-agree" style="text-align: right">
                             <p class="weui-media-box__title to_lover">@我</p>
@@ -229,7 +236,7 @@
                                         <p class="to">TO:<input class="weui-input to_input" type="text"
                                                                 readonly="readonly" placeholder="亲爱的" id="back_data_to">
                                         </p>
-                                        <span class="picture"><img src="" id="updateimg1"></span>
+                                        <span class="picture"><img src="./static/images/my2.png" id="updateimg1"></span>
                                     </a>
                                     <div class="weui_cell">
                                         <div class="weui_cell_bd weui_cell_primary">
@@ -254,7 +261,7 @@
         </div>
         <div class="page-hd result">
             <p class="page__title result_tip">上链成功</p>
-            <p class="page__title result_count">已有<span id="witness"></span>人见证了你的爱<span class="ask_pic" id="ask_pic" ></span></p>
+            <p class="page__title result_count">已有<span id="witness"></span>人见证了你的爱<span class="ask_pic" id="ask_picTo" ></span></p>
         </div>
         <div class="page__hd">
             <p id="up_to"></p>
@@ -262,6 +269,7 @@
             <p id="up_from"></p>
             <p class="weui-btn-area">
                 <a href="javascript:openShare();" class="weui-btn weui-btn_primary deliver">投递</a>
+                <a onclick="findqk();"  class="weui-btn weui-btn_primary check_back" id="findqkuai">查看爱的印记</a>
             </p>
         </div>
         <div class="shade" id="shade" style="display: none" onclick="hideShade()">
@@ -295,15 +303,15 @@
     <div style="width: 100%;height: auto;position: absolute;top:0;bottom:0;background: black;opacity: 0.6;"></div>
     <div id="box">
         <div id="zhizhen"></div>
-        <div id="huan"></div>
+        {{/*<div id="huan"></div>*/}}
     </div>
 </div>
 <div id="scene_share_post_data" class="container">
     <div class="page article js_show">
         <div class="letter_bg_second"></div>
         <div class="letter_img_second"></div>
-        <a href='javascript:' > </a>
-        <div class="letter_content" id="reach_time" style="display:block">
+        {{/*<a href='javascript:switchScene("scene_home");' > <div class="go_back"></div></a>*/}}
+        <div class="letter_content_second" id="reach_time" style="display:block">
             <div class="page__bd">
                 <div class="weui-flex__item">
                     <div class="weui-cell">
@@ -326,7 +334,7 @@
                                         </div>
                                     </div>
                                     <label for="weuiAgree" class="weui-agree _sender">
-                                        <p class="from">Form:<input class="weui-input from_input" type="text" value="{{ .from}}"
+                                        <p class="from_second">Form:<input class="weui-input from_input" type="text" value="{{ .from}}"
                                                                     readonly="readonly" placeholder="From" value="爱人"
                                                                     id="share_up_from">
                                         </p>
@@ -337,9 +345,10 @@
                     </div>
                 </div>
             </div>
-            <div class="weui-msg__opr-area" style="display: block;margin-top:0.5rem">
+            <div class="weui-msg__opr-area" style="display: block;margin-top:0.3rem">
                 <p class="weui-btn-area">
                     <a href="javascript:jumpHome();" class="weui-btn weui-btn_primary also_send">我也要表白</a>
+                    <a href="{{ .hrefurl}}" class="weui-btn check_backs" >查看爱的印记</a>
                 </p>
             </div>
         </div>
@@ -352,7 +361,7 @@
                                 <div class="weui-media-box weui-media-box_small-appmsg second_letter">
                                     <a href="javascript:;">
                                         <p class="to">TO:<input class="weui-input to_input" type="text"
-                                                                readonly="readonly" placeholder="神秘人" id="data_to">邮票
+                                                                readonly="readonly" placeholder="神秘人" id="data_to">
                                         </p>
                                     </a>
                                     <div class="weui_cell" style="text-align: center;margin-top:2rem;">
@@ -378,13 +387,13 @@
                     </div>
                 </div>
             </div>
-            <div class="weui-msg__opr-area" style="display: block">
+            <div class="weui-msg__opr-area express">
                 <p class="weui-btn-area">
                     <a href="javascript:jumpHome();" class="weui-btn weui-btn_primary also_send">我也要表白</a>
                 </p>
             </div>
         </div>
-        <div class="info">
+        <div class="infoTo">
             <p class="info_tip">基于根源链上链技术，信息已在根源链第{{.height}}区块中被记录，信息永久有效不可纂改</p>
             <div class="nav2"></div>
         </div>
@@ -747,7 +756,7 @@
 
 
         //定时器
-      var targetTime = new Date("2018-08-15 16:00:00");
+      var targetTime = new Date("2018-08-15 17:00:00");
        var timerId = countdown(
 
             function(ts) {
@@ -774,10 +783,10 @@
             countdown.DAYS|countdown.HOURS|countdown.MINUTES|countdown.SECONDS);
 
 
-    $(".ask_pic").click(function(){
+    $("#ask_picTo").click(function(){
         $(".info").toggle();
     })
-    $(".ask_pic").click(function(){
+    $("#ask_pic2").click(function(){
         $(".infoTo").toggle();
     })
 </script>
@@ -787,7 +796,7 @@
     //弹幕效果
     let Barrage = function() {
         this.data = []
-        this.speed = 1
+        this.speed = 1.5
         this.list = []
 
         this.wrapInfo = {
@@ -826,6 +835,12 @@
             })
         } else {
             this.wrapInfo.children[el.dataset.index].removeChild(el)
+            {{ range .tanmu}}
+                mookData.push({
+                    text: `{{map_get .data "word"}}`,
+                    index:1
+                })
+            {{ end }}
         }
     }
 
@@ -981,6 +996,7 @@
     $(document).ready(function () {
         lunpan()
         share()
+        recordoncklickbanding()
     })
     var sendPrize=function () {
         $("#regret").css("display","none")
@@ -996,9 +1012,91 @@
         $("#data_to").val("")
         $("#data_from").val("")
         $("#data_content").val("")
+        ajaxHistoryMessage()
     }
     var ifEmpty=function () {
         $("#ifEmpty").css("display","none")
+    }
+</script>
+<script type="text/javascript">
+    var recordoncklickbanding=function(){
+        $('.record_content').click(function(event) {
+            var event = event || e;
+            console.log(event.currentTarget.id);  //获取id属性值
+            var historyid=event.currentTarget.id
+            num=historyid.substring(7)
+            historyaddr=  $("#historyAddr"+num+"").attr("data-value")
+            historyword=  $("#historyWord"+num+"").attr("data-value")
+            historyto=  $("#historyTo"+num+"").attr("data-value")
+            historyethaddr=  $("#historyEthAddr"+num+"").attr("data-value")
+            historyefrom=  $("#historyFrom"+num+"").attr("data-value")
+            historyHeight=  $("#historyHeight"+num+"").attr("data-value")
+            debugger
+            historyImageurl=  $("#historyImageurl"+num+"").attr("data-value")
+
+            switchScene("scene_upload_success")
+            //设置回显的内容，要分享的页面
+            $("#back_data_to").val(historyto)
+            $("#back_data_from").val(historyefrom)
+            $("#back_textarea").val(historyword)
+            $("#witness").val(historyHeight)
+            $("#findqkuai").attr("data-value",historyethaddr)
+            //调用赋值图片的方法
+            backimageurl(historyImageurl)
+            //设置初始化微信分享的页面
+            //初始化addr
+            shareUrl = 'http://service.genyuanlian.com/seven_night/index?shareopenid=' + openid + '&addr=' + historyaddr
+            share()
+
+        })
+    }
+
+
+    var backimageurl=function (imageurl) {
+        if (imageurl=="保存图片失败"){
+
+        }else {
+            $("#updateimg1").attr("src",imageurl)
+        }
+    }
+
+    //获取表白历史数据
+    var ajaxHistoryMessage = function () {
+        $.post("/seven_night/gethistorymessage",
+                {
+                    openid: openid,
+                }, function (res, status) {
+                    if (status == "success") {
+                        if (res.length > 0) {
+                            debugger
+                            var jsons = $.parseJSON(JSON.stringify(res));
+                            var forhtml=""
+                            debugger
+                            for (i = 0; i < res.length; i++) {
+
+                                forhtml=forhtml+  `<div class="weui-media-box weui-media-box_text record_content" id="forEach`+i+`"><p type="hidden" name="ethaddr" id="historyEthaddr`+i+`" data-value="`+jsons[i].ethaddr+`">`  + `</p>
+ <p type="hidden" name="height" id="historyHeight`+i+`" data-value="`+jsons[i].height+`">` +   `</p>` +
+                                        `<p type="hidden" name="imageurl" id="historyImageurl`+i+`" data-value="`+jsons[i].imageurl+`">` +   `</p>` +
+                                        `<p type="hidden" name="from" id="historyFrom`+i+`" data-value="`+jsons[i].from+`">` + `</p>`  +
+                                        `<p class="weui-media-box__desc say_word" id="historyWord`+i+`"data-value="`+jsons[i].word+`">` + jsons[i].word + `</p>
+ <label for="weuiAgree" class="weui-agree" style="text-align: right">
+ <p class="weui-media-box__title to_lover"  id="historyTo`+i+`"  data-value="`+jsons[i].to+`">` + jsons[i].to + `</p>
+ </label>
+ </div>`
+                            }
+                            debugger
+                            $("#historyData").html("")
+                            $("#historyData").html(forhtml)
+                            recordoncklickbanding()
+                        }
+
+                    }
+                })
+
+    }
+    //查看区块链浏览器
+    var findqk=function () {
+        location.href="https://block.genyuanlian.com/tx/"+$("#findqkuai").attr("data-value")
     }
 </script>
 </html>
