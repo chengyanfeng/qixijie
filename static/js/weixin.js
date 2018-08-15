@@ -1,6 +1,6 @@
 var ticket;
 var imagelocalIds;
-var shareUrl
+var shareUrl="http://chengyanfeng.natapp1.cc/redirecturl"
 var addr
 var medId
 var height
