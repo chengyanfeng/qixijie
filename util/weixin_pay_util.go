@@ -12,7 +12,7 @@ import (
 	"crypto/md5"
 	"sort"
 	"encoding/json"
-	"lian/util"
+	"strconv"
 )
 
 /******************************-----------下面是获取登陆的token-----------*************************/
@@ -158,44 +158,12 @@ func JsonEncode(v interface{}) (r string) {
 	return
 }
 
-//微信服务器获取上传的文件和图片
-func GetImageFromCould(mediaId, url string) (imagePath string) {
-	token := ToString(S("forword_token"))
-	retrnbody, _ := http.Get("https://api.weixin.qq.com/cgi-bin/media/get?access_token=" + token + "&media_id=" + mediaId)
-	imageName := retrnbody.Header.Get("Content-Disposition")
-	if imagePath==""{
-		return "保存图片失败"
-	}
-	imageName = strings.Split(imageName, "=")[1]
-	imageName = strings.Replace(imageName, "\"", "", -1)
-	token_body, _ := ioutil.ReadAll(retrnbody.Body)
-	URL := url + imageName
-	flag := WriteFile(URL, token_body)
-	if flag {
-		return URL
-	} else {
-		return "保存图片失败"
-	}
-}
+
 
 /******************************-----------上链接口----------*************************/
 
 //获取上链请求返回地址
-func GetEthAddress() (ethAddress, payid string) {
-	retrnbody, _ := http.Get("http://service.genyuanlian.com/api/bstk/pay/request?amount=1")
-	defer retrnbody.Body.Close()
-	eth_body, _ := ioutil.ReadAll(retrnbody.Body)
-	p := *JsonDecode([]byte(string(eth_body)))
-	flag := p["isOk"].(bool)
-	if flag {
-		a := p["data"].(map[string]interface{})
-		ethAddress = a["addr"].(string)
-		payid = a["payId"].(string)
-		return
-	} else {
-		return
-	}
-}
+
 
 //查询是否支付，这是TSTK,不是微信的支付。暂时放到工具类中
 func CheckIfPay(payid string) bool {
@@ -207,7 +175,7 @@ func CheckIfPay(payid string) bool {
 	if flag {
 		a := p["data"].(map[string]interface{})
 		paidAmount := a["paidAmount"].(string)
-		if util.ToFloat(paidAmount) > 0 {
+		if ToFloat(paidAmount) > 0 {
 			return true
 		} else {
 			return false
@@ -238,4 +206,50 @@ func GetWXpay_id(openid string) (xml string) {
 	token_body, _ := ioutil.ReadAll(response.Body)
 	xml = string(token_body)
 	return xml
+}
+func ToFloat(s interface{}, default_v ...float64) float64 {
+	f64, e := strconv.ParseFloat(ToString(s), 64)
+	if e != nil && len(default_v) > 0 {
+		return default_v[0]
+	}
+	return f64
+}
+
+//微信服务器获取上传的文件和图片
+func GetImageFromCould(mediaId, url string) (imagePath string) {
+	token := ToString(S("forword_token"))
+	retrnbody, _ := http.Get("https://api.weixin.qq.com/cgi-bin/media/get?access_token=" + token + "&media_id=" + mediaId)
+	defer retrnbody.Body.Close()
+
+	imageName := retrnbody.Header.Get("Content-Disposition")
+	if imagePath==""{
+		return "fail"
+	}
+	imageName = strings.Split(imageName, "=")[1]
+	imageName = strings.Replace(imageName, "\"", "", -1)
+	token_body, _ := ioutil.ReadAll(retrnbody.Body)
+	URL := url + imageName
+	flag := WriteFile(URL, token_body)
+	if flag {
+		return URL
+	} else {
+		return "保存图片失败"
+	}
+}
+
+//获取pay地址
+func GetEthAddress() (ethAddress, payid string) {
+	a, _ := http.Get("http://service.genyuanlian.com/api/bstk/pay/request?amount=1")
+	defer a.Body.Close()
+	eth_body, _ := ioutil.ReadAll(a.Body)
+	p := *JsonDecode([]byte(string(eth_body)))
+	flag := p["isOk"].(bool)
+	if flag {
+		a := p["data"].(map[string]interface{})
+		ethAddress = a["addr"].(string)
+		payid = a["payId"].(string)
+		return
+	} else {
+		return
+	}
 }

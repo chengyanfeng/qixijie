@@ -84,7 +84,7 @@ var share=function () {
             title: '链爱的表白',
             desc: '分享一下 不变的爱',
             link: shareUrl,
-            imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1514438682725&di=7624aa8b34c3d92a2d2b95254aff2450&imgtype=0&src=http%3A%2F%2Fvpic.video.qq.com%2F3170316%2Fb03322rccwa_ori_3.jpg',
+            imgUrl: 'http://chengyanfeng.natapp1.cc/static/images/336992676431469143.png',
             trigger: function (res) {
                 },
             success: function (res) {

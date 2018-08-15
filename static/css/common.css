@@ -95,7 +95,7 @@ screen_container {
 .express {
     position: relative;
     width: 100%;
-    top: 4.1rem;
+    top: 4.6rem;
     text-align: center
 }
 
@@ -145,41 +145,45 @@ screen_container {
     left: 10%;
 }
 
-.weui_textarea {
+.weui_textarea{
     display: block;
     border: 0;
     resize: none;
     width: 100%;
     color: #555;
+    background: none;
     font-size: 0.3rem;
     line-height: inherit;
     outline: 0;
-    margin-top: 0.2rem;
+    margin-top:0.2rem;
 }
-
-.to {
-    font-size: 0.36rem;
-    color: #7AA2DF
+.to{
+    font-size:0.36rem;
+    color:#7AA2DF
 }
-
-.from {
+.from{
     font-size: 0.36rem;
-    color: #F092A0;
+    color:#F092A0;
     text-align: right;
-    margin-right: -0.6rem
+    margin-right:-0.6rem;
+    margin-top:-0.2rem;
 }
-
-.to_input {
-    width: 40% !important;
-    color: #7AA2DF !important;
-    font-size: 0.3rem;
+.home_upload{
+    width: 5.2rem;
+    height: 0.9rem;
+}
+.to_input{
+    text-indent: 2em;
+    width: 40%!important;
+    color:#7AA2DF!important;
+    font-size:0.3rem;
     border-bottom: 1px solid #7AA2DF;
 }
-
-.from_input {
-    width: 40% !important;
-    color: #F092A0 !important;
-    font-size: 0.3rem;
+.from_input{
+    text-indent: 2em;
+    width: 40%!important;
+    color:#F092A0!important;
+    font-size:0.3rem;
     border-bottom: 1px solid #F092A0;
 }
 
@@ -230,6 +234,7 @@ screen_container {
 
 .record_content {
     background: #eff6ff;
+    margin-top:0.2rem;
 }
 
 .say_word, .hide_text {
@@ -262,6 +267,10 @@ screen_container {
 
 .dialog_tip {
     border-radius: 8px !important
+}
+.dialog_tips,.dialog_tipTo{
+    border-radius: 8px !important;
+    z-index: 10001;
 }
 
 ._tip {
@@ -359,6 +368,7 @@ screen_container {
 }
 
 .luck_draw {
+    z-index:999;
     display: block;
     opacity: 0.8;
     display: none
@@ -537,28 +547,56 @@ ul {
     background:black;
     opacity: 0.6;
 }
-#box{ width:100%;
+#box{
+    width:70%;
     height:7.5rem;
+    top:10%;
+    left:15%;
     margin:0.2rem auto;
     position:absolute;
-    top:10%;
     background:url(../images/back-jiang.png) no-repeat left top;
     background-size:100%;z-index: 10000;
-}
-.weui-toast{
-    font-size:0.5rem!important;
 }
 #zhizhen{
     width:25%;
     height:2.7rem;
     position:absolute;
-    background:url(../images/pointer.png) no-repeat left top;
+    background:url(../images/huan.png) no-repeat left top;
     left:36%;
-    z-index:999;
+    z-index:9999;
     cursor:pointer;
-    top:2.1rem;
+    top:1.4rem;
+    background-size:100%;
+    /*transform-origin:0.87rem 1.33rem;*/
+}
+#huan{
+    width:25%;
+    height:2.7rem;
+    position:absolute;
+    background:url(../images/jiang.png) no-repeat left top;
+    left:36%;
+    z-index:98;
+    cursor:pointer;
+    top:1.8rem;
     background-size:100%;
     transform-origin:0.87rem 1.33rem;
+}
+.weui-toast{
+    font-size:0.5rem!important;
+}
+
+.weui-msg__text-area{
+    margin:0px!important;
+    padding:0!important
+}
+.weui-btn-area{
+    margin:0!important
+}
+.weui-btn:after{
+    border:none!important
+}
+.weui-toast{
+    font-size:0.5rem!important;
 }
 .weui-msg__text-area{
     margin:0px!important;
@@ -569,4 +607,27 @@ ul {
 }
 .weui-btn:after{
     border:none!important
+}
+
+.weui-panel__hd:after , .weui-panel:before{
+    border:none
+}
+.weui-agree__checkbox:checked:before{
+    color:red;
+}
+.weui-msg{
+    padding-top:0.6rem!important;
+}
+.weui-msg__icon-area{
+    margin-bottom:0.3rem!important
+}
+#addr_area{
+    /*border:1px solid red;*/
+    width: 2.68rem;
+    height: 2.68rem;
+    margin-top:0.3rem
+}
+.copy_to{
+    margin-top:-0.6rem;
+    margin-bottom:0.3rem;
 }

@@ -1,5 +1,6 @@
 var payfortime=1
-window.onload=function(){
+var ifprize=""
+var lunpan =function(){
     //幸运大转盘抽奖
     //获得指针元素
     var zhizhen=document.getElementById("zhizhen");
@@ -32,7 +33,7 @@ window.onload=function(){
         [307,360,"1等奖"]//1等奖
     ];
     //可用次数
-     cishu=payfortime;
+    cishu=payfortime;
     //奖项判定函数
     function is(deg){
         var res="未中奖";
@@ -46,7 +47,7 @@ window.onload=function(){
     //是否在动画中
     var able=false;
     //概率
-    var gailv=[[938,"未中奖"],[18,"6等奖"],[14,"5等奖"],[12,"4等奖"],[8,"3等奖"],[6,"2等奖"],[4,"1等奖"]];
+    var gailv=[[18,"未中奖"],[938,"6等奖"],[14,"5等奖"],[12,"4等奖"],[8,"3等奖"],[6,"2等奖"],[4,"1等奖"]];
     //开始到结束总时间
     var xq=0;
     //通过奖项设置额外角度的表现
@@ -96,13 +97,17 @@ window.onload=function(){
             clearInterval(dbox);
             setTimeout(function(){
                 able=false;
-                //发送ajax
-                alert(is(odeg));
-
-                if (is(odeg)!="未中奖"){
-                    ajaxprize(is(odeg),"","")
+                if (is(odeg)=="未中奖"){
+                    debugger
+                    ifprize=is(odeg)
+                    //显示未中奖div
+                    $("#regret").css("display","block")
                 }else {
-                    ajaxprize(is(odeg))
+
+                    ifprize=is(odeg)
+                    alert(is(odeg))
+                    //显示未中奖div
+                    $("#numberAndName").css("display","block")
                 }
 
 
@@ -121,3 +126,5 @@ window.onload=function(){
     }
 
 };
+window.onload=lunpan
+

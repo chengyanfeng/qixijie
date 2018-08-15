@@ -26,7 +26,6 @@ func init() {
 	mongp["userdata"] = beego.AppConfig.String("mongodbdata")
 	mongp["userprize"] = beego.AppConfig.String("mongodbprize")
 
-
 }
 
 type MainController struct {
@@ -37,7 +36,7 @@ type MainController struct {
 func (c *MainController) UpImageAndMessage() {
 	defer func() {
 		if err := recover(); err != nil {
-			c.Redirect("http://chengyanfeng.natapp1.cc/redirecturl", 302)
+			c.Redirect("/redirecturl", 302)
 		}
 	}()
 	data := model.Node{}
@@ -48,27 +47,35 @@ func (c *MainController) UpImageAndMessage() {
 	data.From = c.GetString("userform")
 	data.To = c.GetString("touser")
 	data.Word = c.GetString("word")
-	ifOpenShow:= c.GetString("ifOpenShow")
+	ifOpenShow := c.GetString("ifOpenShow")
 	fmt.Print(medId)
 	data.Timestamp = util.ToString(time.Now().Unix())
-	magePath := util.GetImageFromCould(medId, "./image/")
-	imagePath := magePath
-	data.ImageUrl = imagePath
+	imagePath := ""
+	if medId == "" {
+		imagePath = "http://chengyanfeng.natapp1.cc/static/images/336992676431469143.png"
+	} else {
+		imagePath = util.GetImageFromCould(medId, "./image/")
+		if imagePath == "fail" {
+			imagePath = "http://chengyanfeng.natapp1.cc/static/images/336992676431469143.png"
+		}
+	}
+	imagePath1 := imagePath
+	data.ImageUrl = imagePath1
 	ethaddr, payId := util.GetEthAddress()
 	data.Addr = ethaddr
 	openid := c.GetString("openid")
 	mongdb.Query = &util.P{"userOpenId": openid}
 	count := mongdb.Count()
-	if count < 1 {
+	if count < 100 {
 		//数据上链
 		ethaddr := UpMessage(data.From + data.Word + data.To)
 		//获取数据高度
 		height := getQurHig()
-		if height==""{
-			height="0"
+		if height == "" {
+			height = "0"
 		}
 		if ethaddr != "false" {
-			mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "1", "addr": data.Addr, "ethaddr": ethaddr, "height": height,"ifOpenShow":ifOpenShow})
+			mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "1", "addr": data.Addr, "ethaddr": ethaddr, "height": height, "ifOpenShow": ifOpenShow})
 			c.Data["json"] = map[string]interface{}{"userOpenId": openid, "addr": data.Addr, "payId": payId, "isPay": 1, "code": 0, "ethaddr": ethaddr, "height": height}
 			c.ServeJSON()
 		}
@@ -79,18 +86,18 @@ func (c *MainController) UpImageAndMessage() {
 			ethaddr := UpMessage(data.From + data.Word + data.To)
 			//获取区块高度
 			height := getQurHig()
-			if height==""{
-				height="0"
+			if height == "" {
+				height = "0"
 			}
 			if ethaddr != "false" {
-				mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "1", "addr": data.Addr, "ethaddr": ethaddr, "height": height,"ifOpenShow":ifOpenShow})
+				mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "1", "addr": data.Addr, "ethaddr": ethaddr, "height": height, "ifOpenShow": ifOpenShow})
 				//更新用户分享信息
 				SetShareInfo(openid)
 				c.Data["json"] = map[string]interface{}{"userOpenId": openid, "addr": data.Addr, "payId": payId, "isPay": 1, "code": 0, "ethaddr": ethaddr, "height": height}
 				c.ServeJSON()
 			}
 		} else {
-			mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "0", "addr": data.Addr,"ifOpenShow":ifOpenShow})
+			mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "0", "addr": data.Addr, "ifOpenShow": ifOpenShow})
 			c.Data["json"] = map[string]interface{}{"userOpenId": openid, "addr": data.Addr, "payId": payId, "isPay": 0, "code": 0}
 			c.ServeJSON()
 		}
@@ -99,8 +106,8 @@ func (c *MainController) UpImageAndMessage() {
 
 //获取所有表白信息
 func (c *MainController) GetUserMessage() {
-	getMessage("", "","")
-	c.Data["json"] = getMessage("", "","")
+	getMessage("", "", "")
+	c.Data["json"] = getMessage("", "", "")
 	c.ServeJSON()
 }
 
@@ -121,7 +128,7 @@ func (c *MainController) Redirecturl() {
 func (c *MainController) Index() {
 	defer func() {
 		if err := recover(); err != nil {
-			c.Redirect("http://chengyanfeng.natapp1.cc/redirecturl", 302)
+			c.Redirect("/redirecturl", 302)
 		}
 	}()
 	Addr := c.GetString("addr")
@@ -129,10 +136,10 @@ func (c *MainController) Index() {
 	//没有openid 就进主页
 	if util.IsEmpty(ShareOpenid) {
 		//获取滚动信息,获取上墙信息，只有isOpenShow 为true时可以
-		AllUp := getMessage("", "","true")
-		mp:=getShowOpenMessage(*AllUp)
+		AllUp := getMessage("", "", "true")
+		mp := getShowOpenMessage(*AllUp)
 
-		c.Data["tanmu"]=mp
+		c.Data["tanmu"] = mp
 		user := &util.P{}
 		docm := mongp["userinfo"]
 		docm2string := util.ToString(docm)
@@ -160,7 +167,7 @@ func (c *MainController) Index() {
 		}
 		nodelist := []model.Node{}
 		openid := (*userinfo)["openid"].(string)
-		p := getMessage(openid, "","")
+		p := getMessage(openid, "", "")
 		for _, v := range *p {
 			node := model.Node{}
 			datap := v["data"]
@@ -175,15 +182,15 @@ func (c *MainController) Index() {
 		c.Data["nodelist"] = nodelist
 		c.TplName = "home.html"
 	} else {
-		p := getMessage(ShareOpenid, Addr,"")
+		p := getMessage(ShareOpenid, Addr, "")
 		data := (*p)[0]["data"]
 		datap := data.(util.P)
 		from := datap["from"]
 		to := datap["to"]
 		word := datap["word"]
-		imageurl:=datap["imageurl"]
-		heigh:=(*p)[0]["height"]
-		c.Data["imageurl"]=imageurl
+		imageurl := datap["imageurl"]
+		heigh := (*p)[0]["height"]
+		c.Data["imageurl"] = imageurl
 		c.Data["from"] = from
 		c.Data["to"] = to
 		c.Data["word"] = word
@@ -199,7 +206,7 @@ func (c *MainController) Index() {
 func (c *MainController) GetHistoryMessage() {
 	nodelist := []model.Node{}
 	openid := c.GetString("openid")
-	p := getMessage(openid, "","")
+	p := getMessage(openid, "", "")
 	for _, v := range *p {
 		node := model.Node{}
 		datap := v["data"]
@@ -230,18 +237,18 @@ func (c *MainController) GetTicker() {
 }
 
 //获取表白信息
-func getMessage(openid, addr,isOpenShow string) (p *[]util.P) {
+func getMessage(openid, addr, isOpenShow string) (p *[]util.P) {
 
 	userdata := mongp["userdata"]
 	docm2string := util.ToString(userdata)
 	mongdb := db.D(docm2string, mongp)
-	if len(addr) == 0&&len(openid)>0 {
+	if len(addr) == 0 && len(openid) > 0 {
 		p = mongdb.Find(util.P{"userOpenId": openid, "IfPay": "1"}).All()
 		return p
-	} else if len(addr) >0&&len(openid)>0   {
+	} else if len(addr) > 0 && len(openid) > 0 {
 		p = mongdb.Find(util.P{"userOpenId": openid, "addr": addr}).All()
 		return p
-	}else {
+	} else {
 		p = mongdb.Find(util.P{"ifOpenShow": isOpenShow}).All()
 		return p
 	}
@@ -349,23 +356,23 @@ func (c *MainController) CheckPay() {
 }
 
 //抽奖的接口
-func (c *MainController)Prize(){
-	openid:=c.GetString("openid")
-	prize:=c.GetString("prize")
-	time:=time.Now().Unix()
-	docm :=mongp["userprize"]
+func (c *MainController) Prize() {
+	openid := c.GetString("openid")
+	prize := c.GetString("prize")
+	phoneNumber := c.GetString("number")
+	time := time.Now().Unix()
+	docm := mongp["userprize"]
 	docm2string := util.ToString(docm)
 	mongdb := db.D(docm2string, mongp)
-	err:=mongdb.Add(util.P{"userOpenId":openid,"prize":prize,"timestamp":time})
-	if err==nil{
-		c.Data["json"]=util.P{"code":0}
+	err := mongdb.Add(util.P{"userOpenId": openid, "prize": prize, "timestamp": time, "phoneNumber": phoneNumber})
+	if err == nil {
+		c.Data["json"] = util.P{"code": 0}
 		c.ServeJSON()
-	}else {
-		c.Data["json"]=util.P{"code":1}
+	} else {
+		c.Data["json"] = util.P{"code": 1}
 		c.ServeJSON()
 	}
 }
-
 
 //上链和更新数据库的支付信息
 func setUpMessage(openid, addr string) (from, to, word, ethaddr, height string) {
@@ -383,8 +390,8 @@ func setUpMessage(openid, addr string) (from, to, word, ethaddr, height string) 
 	ethaddr = UpMessage(data)
 	//获取区块高度
 	height = getQurHig()
-	if height==""{
-		height="0"
+	if height == "" {
+		height = "0"
 	}
 	//更新数据库，支付字段，返回的区块链地址值，区块地址
 	err := mongdb.Upsert(util.P{"userOpenId": openid, "addr": addr}, util.P{"ethaddr": ethaddr, "IfPay": "1", "height": height})
@@ -417,45 +424,44 @@ func getQurHig() string {
 	blocks := util.ToString(data["blocks"])
 	return util.ToString(blocks)
 }
-//获取九个数据
-func getShowOpenMessage(AllUp[]util.P) (mpp []util.P){
 
-	if len(AllUp)<9{
-		lenth:=9-len(AllUp)
-		for i:=1;i<lenth;i++{
-		node:=	util.P{}
-		node["word"]="dsafewfew"
-		p:=	util.P{"data":node}
-			AllUp=append(AllUp,p)
+//获取九个数据
+func getShowOpenMessage(AllUp []util.P) (mpp []util.P) {
+
+	if len(AllUp) < 9 {
+		lenth := 9 - len(AllUp)
+		for i := 1; i < lenth; i++ {
+			node := util.P{}
+			node["word"] = "dsafewfew"
+			p := util.P{"data": node}
+			AllUp = append(AllUp, p)
 
 		}
 		return AllUp
-	}else {
-		mp:=[]util.P{}
-	 for i:=0;i<9;i++{
-		mp= append(mp, AllUp[rand.Intn(len(AllUp))])
+	} else {
+		mp := []util.P{}
+		for i := 0; i < 9; i++ {
+			mp = append(mp, AllUp[rand.Intn(len(AllUp))])
 
-	 }
+		}
 		return mp
 	}
 }
 
 //获取时间对比
-func timeoder()int{
-	nowtime:=time.Now()
-	nowtimenuix:=nowtime.Unix()
+func timeoder() int {
+	nowtime := time.Now()
+	nowtimenuix := nowtime.Unix()
 	the_time, err := time.ParseInLocation("2006-01-02", "2018-08-14:12:00:00", time.Local)
 	if err == nil {
 		unix_time := the_time.Unix()
-		if nowtimenuix<unix_time{
+		if nowtimenuix < unix_time {
 			return 0
-		}else {
+		} else {
 			return 1
 		}
-	}else {
+	} else {
 		return 1
 	}
 
 }
-
-

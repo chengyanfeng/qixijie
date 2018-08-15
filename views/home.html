@@ -70,7 +70,7 @@
     <div class="page article js_show">
         <div class="letter_bg"></div>
         <div class="letter_img"></div>
-        <a href='javascript:switchScene("scene_home");'> <div class="go_back"></div></a>
+        <a href='javascript:switchScene("scene_home");' > <div class="go_back"></div></a>
         <div class="letter_content">
             <div class="page__bd">
                 <div class="weui-flex__item">
@@ -123,20 +123,18 @@
                         <p class="right_record"><img src="./static/images/right.png"></p>
                     </div>
                 </div>
-                <div class="weui-panel__bd record_content">
-                    <label for="weuiAgree" class="weui-agree" style="text-align: right">
-                       {{/* <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox agree_checkbox"/>
-                        <span class="weui-agree__text hide_text">
-                                        隐藏
-                                    </span>*/}}
-                    </label>
-                    <div class="weui-media-box weui-media-box_text" id="historyData">
+                <div class="weui-panel__bd">
+
+                    <div class="weui-media-box weui-media-box_text " id="historyData">
                     {{if .nodelist }}
                     {{range .nodelist }}
+                    <div class="weui-media-box weui-media-box_text record_content">
+
                         <p class="weui-media-box__desc say_word">{{ .Word}}</p>
                         <label for="weuiAgree" class="weui-agree" style="text-align: right">
                             <p class="weui-media-box__title to_lover">{{ .To}}</p>
                         </label>
+                    </div>
                     {{end }}
                     {{else}}
                         <p class="weui-media-box__desc say_word">Hi，你知道吗？这是我想对你说的话!其实我想大声告诉你，你是我的唯一，唯一的永恒</p>
@@ -175,6 +173,19 @@
         <img src="./static/images/goLuck.png">
     </span>
 </p>
+<div class="js_dialog" id="ifEmpty" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog dialog_tip">
+        <div class="weui-dialog__bd">
+            <p class="tip_word">信息不能为空</p >
+        </div>
+        <div class="weui-dialog__ft home_upload">
+            <p><a onclick="ifEmpty()" class="weui-dialog__btn weui-dialog__btn_primary ok_btn">确定</a></p >
+
+        </div>
+    </div>
+</div>
+
 
 
 <div id="scene_pay_wait" class="container">
@@ -183,13 +194,13 @@
         <div class="weui-msg__text-area">
             <h2 class="weui-msg__title _tip">等待BSTK支付确认中...</h2>
             <h4 class="weui-msg__title pay_tip">使用根源链钱包扫描二维码进行支付</h4>
-            <div id='addr_area' style="width: 2.68rem;height: 2.68rem;margin-top:0.3rem">
+            <div id='addr_area'>
                 <div id="qrcode" style="text-align: center;"></div>
                 <p class="weui-msg__desc" id="payId" style="display: none;"></p>
             </div>
 
             <p class="weui-msg__desc" id="payExpire">支付于2018-08-10 16:24失效</p>
-            <p class="copy" style="line-height: 0.8rem"><a href="javascript:copypayId();" class="weui-btn_primary copy_addr">复制地址到剪贴板</a></p>
+            <p class="copy_to"><a href="javascript:copypayId();" class="weui-btn_primary copy_addr">复制地址到剪贴板</a></p>
         </div>
         <div class="weui-msg__opr-area">
             <p class="weui-btn-area">
@@ -205,7 +216,7 @@
 
         <div class="letter_bg"></div>
         <div class="letter_img"></div>
-        <a href='javascript:switchScene("scene_home");'> <div class="go_back"></div></a>
+        <a href='javascript:switchScene("scene_filldata");'> <div class="go_back" onclick="cleardata()"></div></a>
         <div class="letter_content">
             <div class="page__bd">
                 <div class="weui-flex__item">
@@ -242,7 +253,7 @@
         </div>
         <div class="page-hd result">
             <p class="page__title result_tip">上链成功</p>
-            <p class="page__title result_count">已有<span id="witness"></span>人见证了你的爱<span class="ask_pic" ></span></p>
+            <p class="page__title result_count">已有<span id="witness"></span>人见证了你的爱<span class="ask_pic" id="ask_pic" ></span></p>
         </div>
         <div class="page__hd">
             <p id="up_to"></p>
@@ -258,16 +269,39 @@
     </div>
 </div>
 <div id="scene_show_prize" class="container">
+    <div class="js_dialog" id="regret" style="display:none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog dialog_tips">
+            <div class="weui-dialog__bd">
+                <p class="tip_word">很遗憾,没中奖</p >
+            </div>
+            <div class="weui-dialog__ft home_upload">
+                <p><a onclick="sendPrize()" class="weui-dialog__btn weui-dialog__btn_primary ok_btn" >确定</a></p >
+            </div>
+        </div>
+    </div>
+    <div class="js_dialog" id="numberAndName" style="display: none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog dialog_tipTo" id="phoneDiv">
+            <div class="weui-dialog__bd">
+                <p class="tip_word"><input id="phoneNumber"class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入领取人手机号码"></p >
+            </div>
+            <div class="weui-dialog__ft home_upload">
+                <p><a onclick="sendNubAndPrize()"class="weui-dialog__btn weui-dialog__btn_primary ok_btn">确定</a></p >
+            </div>
+        </div>
+    </div>
     <div style="width: 100%;height: auto;position: absolute;top:0;bottom:0;background: black;opacity: 0.6;"></div>
     <div id="box">
         <div id="zhizhen"></div>
+        <div id="huan"></div>
     </div>
 </div>
 <div id="scene_share_post_data" class="container">
     <div class="page article js_show">
         <div class="letter_bg_second"></div>
         <div class="letter_img_second"></div>
-        <a href='javascript:switchScene("scene_home");'> <div class="go_back"></div></a>
+        <a href='javascript:' > </a>
         <div class="letter_content" id="reach_time" style="display:block">
             <div class="page__bd">
                 <div class="weui-flex__item">
@@ -349,10 +383,14 @@
                 </p>
             </div>
         </div>
+        <div class="info">
+            <span>到目前为止已经有{{ .height}}个人见证了你们的爱</span>
+            <div class="nav2"></div>
+        </div>
         <div class="page-hd result">
             <p class="page__title result_tip">上链成功</p>
             <p class="page__title result_count">已有
-                <span id="share_witness">{{ .height}}</span>人见证了你的爱<span class="ask_pic" ></span>
+                <span id="share_witness">{{ .height}}</span>人见证了你的爱<span class="ask_pic" id="ask_pic2"></span>
             </p>
         </div>
     </div>
@@ -380,7 +418,7 @@
             loading.hide(function () {
                 console.log('`loading` has been hidden');
             });
-        }, 10000);
+        }, 20000);
     };
 
     var loadingStop = function () {
@@ -463,6 +501,12 @@
     }
 
     function prepareUploadData() {
+        if($("#data_from").val().length==0 || $("#data_to").val().length==0 || $("#data_content").val().length==0){
+
+        $("#ifEmpty").css("display","block")
+            return;
+        }
+
         if (ifOpen()){
             ifOpenShow="true"
         }else {
@@ -480,7 +524,6 @@
                     ifOpenShow:ifOpenShow
 
                 }, function (res, status) {
-
                     loadingStop();
                     console.log('post res:', res, status);
                     if (res.code !== 0) {
@@ -496,7 +539,7 @@
                         });
                     } else {
                         // show payment qrcode page
-                        $("#payId").html(res.payId);
+                        $("#payId").html(res.addr);
                         $("#qrcode").empty();
                         new QRCode(document.getElementById("qrcode"), {
                             text: res.addr,
@@ -514,9 +557,9 @@
                             payId = res.payId;
                             switchScene('scene_pay_wait');
                             checkPay(true);
-                            payCheckInterval = setInterval(function() {
+                           /* payCheckInterval = setInterval(function() {
                                 checkPay(true);
-                            }, 5000);
+                            }, 5000);*/
                         } else {
                             //官方待支付后肯定会有高度和地址
                             //地址和高度赋值
@@ -536,6 +579,7 @@
     }
 
     function checkPay() {
+        debugger
         loadingStart();
         $.post("/checkpay", {
             openid: openid,
@@ -728,11 +772,11 @@
             targetTime,
             countdown.DAYS|countdown.HOURS|countdown.MINUTES|countdown.SECONDS);
 
-    $(".ask_pic").hover(function () {
+
+    $("#ask_pic").on("touchstart", function(e) {
         $(".info").css("display","block");
-    },function(){
-        $(".info").css("display","none");
-    });
+    })
+
 </script>
 
 
@@ -772,7 +816,7 @@
 
             el.dataset.left = left
 
-            el.style.transform = `translate(${left}px, 0)`
+            el.style.transform = `translate(${left-150}px, 0)`
 
             window.requestAnimationFrame(() => {
                 this.raf(el)
@@ -911,19 +955,44 @@
     });
 
 //抽奖后的ajax 发送
-     var ajaxprize=function(prizesend,number,name){
+     var ajaxprize=function(prizesend,numbe,name){
          $.post("/prize",
                  {
                      openid: openid,
                      prize:prizesend,
-                     number:number,
+                     number:numbe,
                      name:name
                  }, function (res, status) {
+                     lunpan()
+                     debugger
+                     $("#phoneNumber").val("")
+                     $("#numberAndName").css("display","none")
+
                     //无论成功都跳转到下一页
                      sharePage()
                  }
          )
      }
 </script>
+<script type="text/javascript">
 
+    var sendPrize=function () {
+        $("#regret").css("display","none")
+        ajaxprize(ifprize,"","")
+    }
+    var sendNubAndPrize=function () {
+        $("#numberAndName").css("display","none")
+     var  phoneNuber= $("#phoneNumber").val()
+        ajaxprize(ifprize,phoneNuber,"")
+
+    }
+    var cleardata=function(){
+        $("#data_to").val("")
+        $("#data_from").val("")
+        $("#data_content").val("")
+    }
+    var ifEmpty=function () {
+        $("#ifEmpty").css("display","none")
+    }
+</script>
 </html>
