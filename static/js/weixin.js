@@ -1,6 +1,6 @@
 var ticket;
 var imagelocalIds;
-var shareUrl="http://chengyanfeng.natapp1.cc/redirecturl"
+var shareUrl="http://service.genyuanlian.com/seven_nightredirecturl"
 var addr
 var medId
 var height
@@ -84,7 +84,7 @@ var share=function () {
             title: '链爱的表白',
             desc: '分享一下 不变的爱',
             link: shareUrl,
-            imgUrl: 'http://chengyanfeng.natapp1.cc/static/images/336992676431469143.png',
+            imgUrl: 'http://service.genyuanlian.com/seven_nightstatic/images/336992676431469143.png',
             trigger: function (res) {
                 },
             success: function (res) {

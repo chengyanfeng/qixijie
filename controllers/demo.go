@@ -36,7 +36,7 @@ type MainController struct {
 func (c *MainController) UpImageAndMessage() {
 	defer func() {
 		if err := recover(); err != nil {
-			c.Redirect("/redirecturl", 302)
+			c.Redirect("/seven_night/redirecturl", 302)
 		}
 	}()
 	data := model.Node{}
@@ -52,11 +52,11 @@ func (c *MainController) UpImageAndMessage() {
 	data.Timestamp = util.ToString(time.Now().Unix())
 	imagePath := ""
 	if medId == "" {
-		imagePath = "http://chengyanfeng.natapp1.cc/static/images/336992676431469143.png"
+		imagePath = "http://service.genyuanlian.com/seven_nightstatic/images/336992676431469143.png"
 	} else {
 		imagePath = util.GetImageFromCould(medId, "./image/")
 		if imagePath == "fail" {
-			imagePath = "http://chengyanfeng.natapp1.cc/static/images/336992676431469143.png"
+			imagePath = "http://service.genyuanlian.com/seven_nightstatic/images/336992676431469143.png"
 		}
 	}
 	imagePath1 := imagePath
@@ -117,7 +117,7 @@ func (c *MainController) Redirecturl() {
 	ShareOpenid := c.GetString("shareopenid")
 	util.S("addr", Addr)
 	util.S("shareopenid", ShareOpenid)
-	redirecturl := "http%3a%2f%2fchengyanfeng.natapp1.cc%2findex"
+	redirecturl := "http%3a%2f%2fservice.genyuanlian.com%2fseven_night%2findex"
 	url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + def.WEIXINAPPID + "&redirect_uri=" + redirecturl +
 		"&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect"
 	c.Redirect(url, 302)
@@ -128,7 +128,7 @@ func (c *MainController) Redirecturl() {
 func (c *MainController) Index() {
 	defer func() {
 		if err := recover(); err != nil {
-			c.Redirect("/redirecturl", 302)
+			c.Redirect("/seven_night/redirecturl", 302)
 		}
 	}()
 	Addr := c.GetString("addr")
@@ -147,11 +147,11 @@ func (c *MainController) Index() {
 
 		code := c.GetString("code")
 		if code == "" || code == "undefined" {
-			c.Redirect("/redirecturl", 302)
+			c.Redirect("/seven_night/redirecturl", 302)
 		}
 		userinfo := util.GetUserInfo(code)
 		if userinfo == nil {
-			c.Redirect("/redirecturl", 302)
+			c.Redirect("/seven_night/redirecturl", 302)
 		}
 		(*user)["country"] = (*userinfo)["country"].(string)
 		(*user)["city"] = (*userinfo)["city"].(string)

@@ -64,7 +64,7 @@ wx.ready(function () {
 //只有触发分享到朋友圈就会调用这个方法
     wx.onMenuShareTimeline({
         title: '分享朋友圈测试，敢点进来我就弄死你！！！', // 分享标题
-        link: 'http://chengyanfeng.natapp1.cc/redirecturl', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        link: 'http://service.genyuanlian.com/seven_nightredirecturl', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
         imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1514438536365&di=09f25c134d4b0589e136a5fddc22a22c&imgtype=0&src=http%3A%2F%2Fwww.haha365.com%2Fuploadfile%2F2014%2F0404%2F20140404063425613.jpg', // 分享图标
         success: function () {
             alert("chengegfadfa");
@@ -80,7 +80,7 @@ wx.ready(function () {
     wx.onMenuShareAppMessage({
         title: '这他么是个测试',
         desc: '还有谁？？？还有谁？？？我就问还有谁',
-        link: 'http://chengyanfeng.natapp1.cc/redirecturl',
+        link: 'http://service.genyuanlian.com/seven_nightredirecturl',
         imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1514438682725&di=7624aa8b34c3d92a2d2b95254aff2450&imgtype=0&src=http%3A%2F%2Fvpic.video.qq.com%2F3170316%2Fb03322rccwa_ori_3.jpg',
         trigger: function (res) {
             alert('分享前调用的方法');
@@ -99,7 +99,7 @@ wx.ready(function () {
     wx.onMenuShareQQ({
         title: '我是分享到qq里面的', // 分享标题
         desc: '这个是测试', // 分享描述
-        link: 'http://chengyanfeng.natapp1.cc/main/index', // 分享链接
+        link: 'http://service.genyuanlian.com/seven_nightmain/index', // 分享链接
         imgUrl: 'http://demo.open.weixin.qq.com/jssdk/images/p2166127561.jpg', // 分享图标
         trigger: function (res) {
             alert('分享前调用的方法');

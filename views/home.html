@@ -401,7 +401,7 @@
 </body>
 <script type="text/javascript">
     // global var define here
-    var baseLink = 'http://chengyanfeng.natapp1.cc/redirecturl';
+    var baseLink = 'http://service.genyuanlian.com/seven_nightredirecturl';
     var shareLink = baseLink;
     var currentScene = 'scene_home';//'';
     var prevScene;
@@ -597,7 +597,7 @@
                     weui.toast('未知错误，请联系客服', 2000);
                 } else if (res.data.success) {
                     //分享的页面初始化加载
-                    shareUrl = 'http://chengyanfeng.natapp1.cc/index?shareopenid=' + openid + '&addr=' + addr
+                    shareUrl = 'http://service.genyuanlian.com/seven_nightindex?shareopenid=' + openid + '&addr=' + addr
                     share();
                     //设置高度
                     $("#witness").html(res.data.height);
@@ -617,7 +617,7 @@
 
     //跳转到支付完成，需要分享的页面
    var  sharePage=function(){
-        shareUrl = 'http://chengyanfeng.natapp1.cc/index?shareopenid=' + openid + '&addr=' + addr
+        shareUrl = 'http://service.genyuanlian.com/seven_nightindex?shareopenid=' + openid + '&addr=' + addr
         //重新初始化微信分享
         share()
        //回显和不可编辑
