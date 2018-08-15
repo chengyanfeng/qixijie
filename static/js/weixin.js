@@ -68,9 +68,9 @@ var share=function () {
         });
 //只有触发分享到朋友圈就会调用这个方法
         wx.onMenuShareTimeline({
-            title: '分享朋友圈测试，敢点进来我就弄死你！！！', // 分享标题
+            title: '链上的爱', // 分享标题
             link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-            imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1514438536365&di=09f25c134d4b0589e136a5fddc22a22c&imgtype=0&src=http%3A%2F%2Fwww.haha365.com%2Fuploadfile%2F2014%2F0404%2F20140404063425613.jpg', // 分享图标
+            imgUrl: 'http://service.genyuanlian.com/seven_night/static/images/336992676431469143.png', // 分享图标
             success: function () {
                 $.get("/seven_night/sharesucess?openid="+openid, function (res, status) {
 
@@ -84,7 +84,7 @@ var share=function () {
             title: '链爱的表白',
             desc: '分享一下 不变的爱',
             link: shareUrl,
-            imgUrl: 'http://service.genyuanlian.com/seven_nightstatic/images/336992676431469143.png',
+            imgUrl: 'http://service.genyuanlian.com/seven_night/static/images/336992676431469143.png',
             trigger: function (res) {
                 },
             success: function (res) {

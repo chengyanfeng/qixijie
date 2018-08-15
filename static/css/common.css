@@ -173,14 +173,18 @@ screen_container {
     height: 0.9rem;
 }
 .to_input{
-    text-indent: 2em;
+    position: relative;
+    top:-0.1rem;
+    text-indent: 1em;
     width: 40%!important;
     color:#7AA2DF!important;
     font-size:0.3rem;
     border-bottom: 1px solid #7AA2DF;
 }
 .from_input{
-    text-indent: 2em;
+    position: relative;
+    top:-0.1rem;
+    text-indent: 1em;
     width: 40%!important;
     color:#F092A0!important;
     font-size:0.3rem;
@@ -495,7 +499,7 @@ screen_container {
     width: 90%;
     height: 50px;
     left: 5%;
-    line-height: 50px;
+    /*line-height: 50px;*/
     background: rgb(29, 28, 23);
     box-shadow: 1px 2px 3px rgb(29, 28, 23);
     border: 1px solid #000;
@@ -503,7 +507,22 @@ screen_container {
     text-align: center;
     color: #fff;
 }
-
+.infoTo {
+    display: none;
+    position: absolute;
+    font-size: 0.26rem;
+    top: 10rem;
+    width: 90%;
+    height: 50px;
+    left: 5%;
+    /*line-height: 50px;*/
+    background: rgb(29, 28, 23);
+    box-shadow: 1px 2px 3px rgb(29, 28, 23);
+    border: 1px solid #000;
+    border-radius: 4px;
+    text-align: center;
+    color: #fff;
+}
 .ask_pic:hover .info {
     display: block
 }
@@ -630,4 +649,20 @@ ul {
 .copy_to{
     margin-top:-0.6rem;
     margin-bottom:0.3rem;
+}
+.weui-agree__text{
+    color:#555;
+}
+.info_tip{
+    width: 95%;
+    text-align: left;
+    margin-top: 0.1rem;
+}
+.timer{
+    width: 1.6rem;
+    height: 1.6rem
+}
+.timer img{
+    width: 100%;
+    height: 100%;
 }

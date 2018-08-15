@@ -222,7 +222,7 @@ func GetImageFromCould(mediaId, url string) (imagePath string) {
 	defer retrnbody.Body.Close()
 
 	imageName := retrnbody.Header.Get("Content-Disposition")
-	if imagePath==""{
+	if imageName==""{
 		return "fail"
 	}
 	imageName = strings.Split(imageName, "=")[1]

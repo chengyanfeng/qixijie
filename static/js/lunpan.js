@@ -126,5 +126,5 @@ var lunpan =function(){
     }
 
 };
-window.onload=lunpan
+
 

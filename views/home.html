@@ -83,7 +83,7 @@
                                                                 placeholder="亲爱的"
                                                                 id="data_to">
                                         </p>
-                                        <span class="picture" id="chooseImage" onclick="chooseimge()"><img src="../static/images/circle.png" id="updateimg"></span>
+                                        <span class="picture" id="chooseImage" onclick="chooseimge()"><img src="" id="updateimg" alt="可上传"></span>
                                     </a>
                                     <div class="weui_cell">
                                         <div class="weui_cell_bd weui_cell_primary">
@@ -94,7 +94,7 @@
                                     <label for="weuiAgree" class="weui-agree">
 
                                         <p class="from">Form:<input class="weui-input from_input" type="text"
-                                                                    placeholder="From" value="爱人" id="data_from"></p>
+                                                                    placeholder="Lover" id="data_from"></p>
                                     </label>
                                 </div>
                             </div>
@@ -107,7 +107,7 @@
             <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox agree_checkbox"/>
             <span class="weui-agree__text" >
                         公开上墙
-                    </span>
+            </span>
         </label>
         <div class="home_upload">
 
@@ -131,8 +131,8 @@
                     <div class="weui-media-box weui-media-box_text record_content">
 
                         <p class="weui-media-box__desc say_word">{{ .Word}}</p>
-                        <label for="weuiAgree" class="weui-agree" style="text-align: right">
-                            <p class="weui-media-box__title to_lover">{{ .To}}</p>
+                        <label style="text-align: right">
+                            <p class="to_lover">{{ .To}}</p>
                         </label>
                     </div>
                     {{end }}
@@ -190,7 +190,8 @@
 
 <div id="scene_pay_wait" class="container">
     <div class="weui-msg">
-        <div class="weui-msg__icon-area"><i class="weui-icon-waiting weui-icon_msg" style="color:#fd748d"></i></div>
+        {{/*<div class="weui-msg__icon-area"><i class="weui-icon-waiting weui-icon_msg" style="color:#fd748d"></i></div>*/}}
+            <div class="weui-msg__icon-area timer"><img src="../seven_night/static/images/time.png"></div>
         <div class="weui-msg__text-area">
             <h2 class="weui-msg__title _tip">等待BSTK支付确认中...</h2>
             <h4 class="weui-msg__title pay_tip">使用根源链钱包扫描二维码进行支付</h4>
@@ -228,7 +229,7 @@
                                         <p class="to">TO:<input class="weui-input to_input" type="text"
                                                                 readonly="readonly" placeholder="亲爱的" id="back_data_to">
                                         </p>
-                                        <span class="picture"><img src="../static/images/circle.png" id="updateimg1"></span>
+                                        <span class="picture"><img src="" id="updateimg1"></span>
                                     </a>
                                     <div class="weui_cell">
                                         <div class="weui_cell_bd weui_cell_primary">
@@ -240,7 +241,7 @@
 
 
                                         <p class="from">Form:<input class="weui-input from_input" type="text"
-                                                                    readonly="readonly" placeholder="From" value="爱人"
+                                                                    readonly="readonly" placeholder="Lover"
                                                                     id="back_data_from">
                                         </p>
                                     </label>
@@ -384,7 +385,7 @@
             </div>
         </div>
         <div class="info">
-            <span>到目前为止已经有{{ .height}}个人见证了你们的爱</span>
+            <p class="info_tip">基于根源链上链技术，信息已在根源链第{{.height}}区块中被记录，信息永久有效不可纂改</p>
             <div class="nav2"></div>
         </div>
         <div class="page-hd result">
@@ -401,7 +402,7 @@
 </body>
 <script type="text/javascript">
     // global var define here
-    var baseLink = 'http://service.genyuanlian.com/seven_nightredirecturl';
+    var baseLink = 'http://service.genyuanlian.com/seven_night/redirecturl';
     var shareLink = baseLink;
     var currentScene = 'scene_home';//'';
     var prevScene;
@@ -514,7 +515,7 @@
         }
         // loading
         loadingStart();
-        $.post("/upimageAndmessage",
+        $.post("/seven_night/upimageAndmessage",
                 {
                     userform: $("#data_from").val(),
                     touser: $("#data_to").val(),
@@ -557,9 +558,9 @@
                             payId = res.payId;
                             switchScene('scene_pay_wait');
                             checkPay(true);
-                           /* payCheckInterval = setInterval(function() {
+                          payCheckInterval = setInterval(function() {
                                 checkPay(true);
-                            }, 5000);*/
+                            }, 5000);
                         } else {
                             //官方待支付后肯定会有高度和地址
                             //地址和高度赋值
@@ -581,7 +582,7 @@
     function checkPay() {
         debugger
         loadingStart();
-        $.post("/checkpay", {
+        $.post("/seven_night/checkpay", {
             openid: openid,
             addr: addr,
             payid: payId
@@ -597,7 +598,7 @@
                     weui.toast('未知错误，请联系客服', 2000);
                 } else if (res.data.success) {
                     //分享的页面初始化加载
-                    shareUrl = 'http://service.genyuanlian.com/seven_nightindex?shareopenid=' + openid + '&addr=' + addr
+                    shareUrl = 'http://service.genyuanlian.com/seven_night/index?shareopenid=' + openid + '&addr=' + addr
                     share();
                     //设置高度
                     $("#witness").html(res.data.height);
@@ -617,7 +618,7 @@
 
     //跳转到支付完成，需要分享的页面
    var  sharePage=function(){
-        shareUrl = 'http://service.genyuanlian.com/seven_nightindex?shareopenid=' + openid + '&addr=' + addr
+        shareUrl = 'http://service.genyuanlian.com/seven_night/index?shareopenid=' + openid + '&addr=' + addr
         //重新初始化微信分享
         share()
        //回显和不可编辑
@@ -746,7 +747,7 @@
 
 
         //定时器
-      var targetTime = new Date("2018-08-14 12:00:00");
+      var targetTime = new Date("2018-08-15 16:00:00");
        var timerId = countdown(
 
             function(ts) {
@@ -773,10 +774,12 @@
             countdown.DAYS|countdown.HOURS|countdown.MINUTES|countdown.SECONDS);
 
 
-    $("#ask_pic").on("touchstart", function(e) {
-        $(".info").css("display","block");
+    $(".ask_pic").click(function(){
+        $(".info").toggle();
     })
-
+    $(".ask_pic").click(function(){
+        $(".infoTo").toggle();
+    })
 </script>
 
 
@@ -956,7 +959,7 @@
 
 //抽奖后的ajax 发送
      var ajaxprize=function(prizesend,numbe,name){
-         $.post("/prize",
+         $.post("/seven_night/prize",
                  {
                      openid: openid,
                      prize:prizesend,
@@ -975,7 +978,10 @@
      }
 </script>
 <script type="text/javascript">
-    window.onload=share()
+    $(document).ready(function () {
+        lunpan()
+        share()
+    })
     var sendPrize=function () {
         $("#regret").css("display","none")
         ajaxprize(ifprize,"","")
