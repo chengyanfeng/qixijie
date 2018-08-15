@@ -9,7 +9,7 @@ $.ajax({
     async: false,
     type: 'post',
     data: {'url': location.href},
-    url: '/share/get_user_token',
+    url: '/seven_night/share/get_user_token',
     success: function (data) {
     }
 });
@@ -18,7 +18,7 @@ $.ajax({
     async: false,
     type: 'post',
     data: {'': location.href},
-    url: '/share/get_user_token',
+    url: '/seven_night/share/get_user_token',
     success: function (data) {
     }
 });
@@ -27,7 +27,7 @@ $.ajax({
 $.ajax({
     async: false,
     type: 'get',
-    url: '/share/get_ticker',
+    url: '/seven_night/share/get_ticker',
     success: function (data) {
         ticket = data;
     }
@@ -72,7 +72,7 @@ var share=function () {
             link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
             imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1514438536365&di=09f25c134d4b0589e136a5fddc22a22c&imgtype=0&src=http%3A%2F%2Fwww.haha365.com%2Fuploadfile%2F2014%2F0404%2F20140404063425613.jpg', // 分享图标
             success: function () {
-                $.get("/sharesucess?openid="+openid, function (res, status) {
+                $.get("/seven_night/sharesucess?openid="+openid, function (res, status) {
 
                     })
             },
@@ -88,7 +88,7 @@ var share=function () {
             trigger: function (res) {
                 },
             success: function (res) {
-                $.get("/sharesucess?openid="+openid, function (res, status) {
+                $.get("/seven_night/sharesucess?openid="+openid, function (res, status) {
 
                 })
             },
@@ -150,7 +150,7 @@ var pay=function () {
     debugger
     a=""
     $.ajaxSettings.async = false;
-    $.get("/getpayid",function(data,status){
+    $.get("/seven_night/getpayid",function(data,status){
         da=$.parseXML(data)
         $xml=$(da)
         $title=$xml.find("prepay_id")

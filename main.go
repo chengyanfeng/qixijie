@@ -12,6 +12,8 @@ func init(){
 func main() {
 	beego.SetStaticPath("/MP_verify_oSClQLOUTyzPRg6o.txt","MP_verify_oSClQLOUTyzPRg6o.txt")
 	beego.SetStaticPath("/seven_night/image","./image/")
+	beego.SetStaticPath("/seven_night/static","./static/")
+
 
 	def.Outtradeno=beego.AppConfig.String("outtradeno")
 	beego.Run()
