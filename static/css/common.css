@@ -166,7 +166,7 @@ screen_container {
 }
 .to{
     font-size:0.36rem;
-    color:#7AA2DF
+    color:#7AA2DF;
 }
 .from{
     font-size: 0.36rem;
@@ -195,6 +195,7 @@ screen_container {
     font-size:0.3rem;
     border-bottom: 1px solid #7AA2DF;
 }
+
 .from_input{
     position: relative;
     top:-0.1rem;
@@ -203,6 +204,12 @@ screen_container {
     color:#F092A0!important;
     font-size:0.3rem;
     border-bottom: 1px solid #F092A0;
+}
+.to_input::-webkit-input-placeholder {
+    color:#7AA2EA;
+}
+.from_input::-webkit-input-placeholder{
+    color:#F092A0!important
 }
 .agree_checkbox {
     border: 1px solid #7AA2DF
@@ -288,7 +295,8 @@ screen_container {
 }
 
 .dialog_tip {
-    border-radius: 8px !important
+    border-radius: 8px !important;
+    top:40%!important;
 }
 .dialog_tips,.dialog_tipTo{
     border-radius: 8px !important;
@@ -599,8 +607,8 @@ ul {
     background-size:100%;z-index: 10000;
 }
 #zhizhen{
-    width:25%;
-    height:2.7rem;
+    width:1.74rem;
+    height:2.28rem;
     position:absolute;
     background:url(../images/pointer.png) no-repeat left top;
     left:36%;
@@ -608,20 +616,20 @@ ul {
     cursor:pointer;
     top:1.4rem;
     background-size:100%;
+    transform-origin:87px 133px;
+}
+/*#huan{*/
+    /*width:25%;*/
+    /*height:2.7rem;*/
+    /*position:absolute;*/
+    /*background:url(../images/jiang.png) no-repeat left top;*/
+    /*left:36%;*/
+    /*z-index:98;*/
+    /*cursor:pointer;*/
+    /*top:1.8rem;*/
+    /*background-size:100%;*/
     /*transform-origin:0.87rem 1.33rem;*/
-}
-#huan{
-    width:25%;
-    height:2.7rem;
-    position:absolute;
-    background:url(../images/jiang.png) no-repeat left top;
-    left:36%;
-    z-index:98;
-    cursor:pointer;
-    top:1.8rem;
-    background-size:100%;
-    transform-origin:0.87rem 1.33rem;
-}
+/*}*/
 .weui-toast{
     font-size:0.5rem!important;
 }

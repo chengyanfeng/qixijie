@@ -52,11 +52,11 @@ func (c *MainController) UpImageAndMessage() {
 	data.Timestamp = util.ToString(time.Now().Unix())
 	imagePath := ""
 	if medId == "" {
-		imagePath = "http://service.genyuanlian.com/seven_nightstatic/images/336992676431469143.png"
+		imagePath = "http://service.genyuanlian.com/seven_night/static/images/my2.png"
 	} else {
 		imagePath = util.GetImageFromCould(medId, "./image/")
 		if imagePath == "fail" {
-			imagePath = "http://service.genyuanlian.com/seven_nightstatic/images/336992676431469143.png"
+			imagePath = "http://service.genyuanlian.com/seven_night/static/images/my2.png"
 		}
 	}
 	imagePath1 := imagePath
@@ -180,6 +180,10 @@ func (c *MainController) Index() {
 			node.Addr = util.ToString(data["addr"])
 			node.Timestamp = util.ToString(data["timestamp"])
 			node.EthAddr = util.ToString(v["ethaddr"])
+			fmt.Print("----------------------------------------------------------------------------------------------------------------ethaddr-------------------------------")
+			fmt.Print(util.ToString(v["ethaddr"]))
+			fmt.Print("----------------------------------------------------------------------------------------------------------------ethaddr-------------------------------")
+
 			node.Height = hight
 			nodelist = append(nodelist, node)
 		}
@@ -208,24 +212,29 @@ func (c *MainController) Index() {
 	}
 }
 
-// 获取历史数据---暂时无用
+// 获取历史数据
 func (c *MainController) GetHistoryMessage() {
-	nodelist := []model.Node{}
+	nodelist := []model.History{}
 	openid := c.GetString("openid")
 	p := getMessage(openid, "", "")
 	for _, v := range *p {
-		node := model.Node{}
+		node := model.History{}
 		datap := v["data"]
+		height := util.ToString(v["height"])
+		ethaddr := v["ethaddr"].(string)
 		data := datap.(util.P)
 		node.From = util.ToString(data["from"])
 		node.To = util.ToString(data["to"])
+		node.ImageUrl = util.ToString(data["imageurl"])
 		node.Word = util.ToString(data["word"])
 		node.Timestamp = util.ToString(data["timestamp"])
+		node.Addr = util.ToString(data["addr"])
+		node.EthAddr = ethaddr
+		node.Height = height
 		nodelist = append(nodelist, node)
 	}
-	c.Data["openid"] = openid
-	c.Data["nodelist"] = nodelist
-	c.TplName = "home.html"
+	c.Data["json"] = nodelist
+	c.ServeJSON()
 }
 
 //微信获取的转发token

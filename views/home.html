@@ -48,9 +48,9 @@
         </div>
         <div class="page__bd">
             <div class="barrage js_barrage_wrap" style="overflow: hidden;">
-                <div id="barrage1" class="js_barrage_line"></div>
-                <div id="barrage2" class="js_barrage_line"></div>
-                <div id="barrage3" class="js_barrage_line"></div>
+                <div id="barrage1" class="js_barrage_line" style="position: relative"></div>
+                <div id="barrage2" class="js_barrage_line" style="position: relative"></div>
+                <div id="barrage3" class="js_barrage_line" style="position: relative"></div>
 
             </div>
         </div>
@@ -136,18 +136,19 @@
 
                             <p type="hidden" data-value="{{ $v.From}}" name="from" id="historyFrom{{$k}}"></p>
                             <p type="hidden" data-value="{{ $v.Addr}}" name="addr" id="historyAddr{{$k}}"></p>
-                            <p class="weui-media-box__desc say_word" data-value="{{ $v.Word}}" id="historyWord{{$k}}">{{ $v.Word}}</p>
-                            <label for="weuiAgree" class="weui-agree" style="text-align: right">
-                                <p class="weui-media-box__title to_lover" data-value="{{ $v.To}}" id="historyTo{{$k}}">{{ $v.To}}</p>
+                            <label for="weuiAgree" class="weui-agree" style="text-align: left">
+                                <p class="weui-media-box__title to_lover" data-value="{{ $v.To}}" id="historyTo{{$k}}">To:{{ $v.To}}</p>
                             </label>
+                            <p class="weui-media-box__desc say_word" data-value="{{ $v.Word}}" id="historyWord{{$k}}">{{ $v.Word}}</p>
+
                         </div>
                     {{end }}
                     {{else}}
-
-                        <p class="weui-media-box__desc say_word">Hi，你知道吗？这是我想对你说的话!其实我想大声告诉你，你是我的唯一，唯一的永恒</p>
-                        <label for="weuiAgree" class="weui-agree" style="text-align: right">
+                        <label for="weuiAgree" class="weui-agree" style="text-align: left">
                             <p class="weui-media-box__title to_lover">@我</p>
                         </label>
+                        <p class="weui-media-box__desc say_word">Hi，你知道吗？这是我想对你说的话!其实我想大声告诉你，你是我的唯一，唯一的永恒</p>
+
                     {{end}}
 
                     </div>
@@ -207,8 +208,8 @@
                 <p class="weui-msg__desc" id="payId" style="display: none;"></p>
             </div>
 
-            <p class="weui-msg__desc" id="payExpire">支付于2018-08-10 16:24失效</p>
-            <p class="copy_to"><a href="javascript:copypayId();" class="weui-btn_primary copy_addr">复制地址到剪贴板</a></p>
+            <p class="weui-msg__desc" id="payExpire">支付于20分钟后失效</p>
+            <p class="copy_to"><a href="javascript:copypayId();" class="weui-btn_primary copy_addr">点击复制地址到剪贴板</a></p>
         </div>
         <div class="weui-msg__opr-area">
             <p class="weui-btn-area">
@@ -259,6 +260,10 @@
                 </div>
             </div>
         </div>
+        <div class="info">
+            <p class="info_tip">基于根源链上链技术，信息已在根源链第{{.height}}区块中被记录，信息永久有效不可纂改</p>
+            <div class="nav2"></div>
+        </div>
         <div class="page-hd result">
             <p class="page__title result_tip">上链成功</p>
             <p class="page__title result_count">已有<span id="witness"></span>人见证了你的爱<span class="ask_pic" id="ask_picTo" ></span></p>
@@ -294,6 +299,7 @@
         <div class="weui-dialog dialog_tipTo" id="phoneDiv">
             <div class="weui-dialog__bd">
                 <p class="tip_word"><input id="phoneNumber"class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入领取人手机号码"></p >
+                <p class="tip_word">地址:<input id="address"class="weui-input" type="number"  placeholder="地址"></p >
             </div>
             <div class="weui-dialog__ft home_upload">
                 <p><a onclick="sendNubAndPrize()"class="weui-dialog__btn weui-dialog__btn_primary ok_btn">确定</a></p >
@@ -335,7 +341,7 @@
                                     </div>
                                     <label for="weuiAgree" class="weui-agree _sender">
                                         <p class="from_second">Form:<input class="weui-input from_input" type="text" value="{{ .from}}"
-                                                                    readonly="readonly" placeholder="From" value="爱人"
+                                                                    readonly="readonly" placeholder="Lover"
                                                                     id="share_up_from">
                                         </p>
                                     </label>
@@ -823,7 +829,7 @@
     Barrage.prototype.raf = function(el) {
         let left = el.dataset.left
 
-        if(left > 0) {
+        if(left > -el.offsetWidth) {
             left -= this.speed
 
             el.dataset.left = left
@@ -858,6 +864,12 @@
         div.style.backgroundImage ="url('../seven_night/static/images/blue_btn.png')";
 
         div.style.backgroundSize = "100%,100%";
+
+        div.style.position="absolute";
+
+        div.style.top="0";
+
+        div.style.left="0";
 
         div.style.width="60%";
 
@@ -1078,11 +1090,12 @@
  <p type="hidden" name="height" id="historyHeight`+i+`" data-value="`+jsons[i].height+`">` +   `</p>` +
                                         `<p type="hidden" name="imageurl" id="historyImageurl`+i+`" data-value="`+jsons[i].imageurl+`">` +   `</p>` +
                                         `<p type="hidden" name="from" id="historyFrom`+i+`" data-value="`+jsons[i].from+`">` + `</p>`  +
-                                        `<p class="weui-media-box__desc say_word" id="historyWord`+i+`"data-value="`+jsons[i].word+`">` + jsons[i].word + `</p>
- <label for="weuiAgree" class="weui-agree" style="text-align: right">
+
+ `<label for="weuiAgree" class="weui-agree" style="text-align: right">
  <p class="weui-media-box__title to_lover"  id="historyTo`+i+`"  data-value="`+jsons[i].to+`">` + jsons[i].to + `</p>
- </label>
- </div>`
+ </label>`+
+ `<p class="weui-media-box__desc say_word" id="historyWord`+i+`"data-value="`+jsons[i].word+`">` + jsons[i].word + `</p>`+
+                                        `</div>`
                             }
                             debugger
                             $("#historyData").html("")
