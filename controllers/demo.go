@@ -390,6 +390,32 @@ func (c *MainController) Prize() {
 		c.ServeJSON()
 	}
 }
+//抽奖的接口，内部奖项
+func  InserPrize(openid string,prize string) {
+	time := time.Now().Unix()
+	docm := mongp["userprize"]
+	docm2string := util.ToString(docm)
+	mongdb := db.D(docm2string, mongp)
+	err := mongdb.Add(util.P{"userOpenId": openid, "prize": prize, "timestamp": time})
+	if err == nil {
+
+	} else {
+
+	}
+}
+
+func getPrizeRand() (stringa string,inti int){
+	randstring:=[]string{"9.9BSTK","9.9BSTK","9.9BSTK","9.9BSTK","9.9BSTK","99BSTK","蜂蜜","小红薯","算力包","石魁粉"}
+	randint:=[]int{1,1,1,1,1,1,2,3,4,5}
+	i:=rand.Intn(10)
+	stringa=randstring[i]
+	inti=randint[i]
+	return stringa,inti
+}
+
+
+
+
 
 //上链和更新数据库的支付信息
 func setUpMessage(openid, addr string) (from, to, word, ethaddr, height string) {
