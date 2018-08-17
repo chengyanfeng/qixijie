@@ -17,20 +17,20 @@ var lunpan =function(){
     //变化增量
     var cc=5;
     //旋转基本圈数
-    var quan=6;
+    var quan=3;
     //多余角度
     var odeg=null;
     //停止时的角度
     var stopdeg=null;
     //区间奖项
     var jiang=[
-        [1,51,"未中奖"], //未中奖
-        [52,102,"6等奖"],//6等奖
-        [103,153,"5等奖"],//5等奖
-        [154,203,"4等奖"],//4等奖
-        [204,251,"3等奖"],//3等奖
-        [252,307,"2等奖"],//2等奖
-        [307,360,"1等奖"]//1等奖
+        [1,51,"9.9BSTK"], //未中奖
+        [52,102,"99BSTK"],//6等奖
+        [103,153,"蜂蜜(38元)"],//5等奖
+        [154,203,"小红薯一筐(48元)"],//4等奖
+        [204,251,"算力包(50元)"],//3等奖
+        [252,307,"石斛粉(119元)"],//2等奖
+        [307,360,"MAC口红套装(1588元)"]//1等奖
     ];
     //可用次数
     cishu=payfortime;
@@ -47,7 +47,7 @@ var lunpan =function(){
     //是否在动画中
     var able=false;
     //概率
-    var gailv=[[18,"未中奖"],[938,"6等奖"],[14,"5等奖"],[12,"4等奖"],[8,"3等奖"],[6,"2等奖"],[4,"1等奖"]];
+    var gailv=[[100,"9.9BSTK"],[700,"99BSTK"],[50,"蜂蜜(38元)"],[50,"小红薯一筐(48元)"],[50,"算力包(50元)"],[50,"石斛粉(119元)"],[0,"MAC口红套装(1588元)"]];
     //开始到结束总时间
     var xq=0;
     //通过奖项设置额外角度的表现
@@ -66,7 +66,7 @@ var lunpan =function(){
     zhizhen.onclick=function(){
         if(!able){
             if(cishu==0){//可用次数处理
-                alert("次数耗光，等待次啊次机会！");
+                alert("次数耗光，等待下次机会！");
 
 
             }else{
@@ -103,18 +103,28 @@ var lunpan =function(){
                     //显示未中奖div
                     $("#regret").css("display","block")
                 }else {
+			ifprize=is(odeg)
+			var dialog =weui.dialog({
+    title: '中奖了',
+    content: '恭喜您获得了'+ifprize,
+	className: 'custom-classname',
+    buttons: [{
+        label: '确定',
+        type: 'primary',
+        onClick: function () { $("#numberAndName").css("display","block") }
+    }]
+});
 
-                    ifprize=is(odeg)
-                    alert(is(odeg))
                     //显示未中奖div
-                    $("#numberAndName").css("display","block")
                 }
 
 
             },500)
         }else{
             if(deg%360==0){//判断第几圈
+		console.log(deg)
                 xq+=1;
+		console.log(xq)
                 if(xq==quan-1){//到最后一圈
                     cc=1;//增量变为1 变慢旋转
                 };
@@ -126,5 +136,4 @@ var lunpan =function(){
     }
 
 };
-
 

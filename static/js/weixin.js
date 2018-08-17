@@ -1,6 +1,7 @@
 var ticket;
 var imagelocalIds;
 var shareUrl="http://service.genyuanlian.com/seven_night/redirecturl"
+var shareTitle="我是第4256个在根源链上表白的人"
 var addr
 var medId
 var height
@@ -68,9 +69,9 @@ var share=function () {
         });
 //只有触发分享到朋友圈就会调用这个方法
         wx.onMenuShareTimeline({
-            title: '链上的爱', // 分享标题
+            title: shareTitle, // 分享标题
             link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-            imgUrl: 'http://service.genyuanlian.com/seven_night/static/images/336992676431469143.png', // 分享图标
+            imgUrl: 'https://service.genyuanlian.com/seven_night/static/images/336992676431469143.png', // 分享图标
             success: function () {
                 $.get("/seven_night/sharesucess?openid="+openid, function (res, status) {
 
@@ -81,10 +82,10 @@ var share=function () {
         });
 //分享给朋友调用的方法
         wx.onMenuShareAppMessage({
-            title: '链爱的表白',
-            desc: '分享一下 不变的爱',
+            title: shareTitle,
+            desc: '基于区块链技术，此表白将永久保存、不可篡改',
             link: shareUrl,
-            imgUrl: 'http://service.genyuanlian.com/seven_night/static/images/336992676431469143.png',
+            imgUrl: 'https://service.genyuanlian.com/seven_night/static/images/336992676431469143.png',
             trigger: function (res) {
                 },
             success: function (res) {

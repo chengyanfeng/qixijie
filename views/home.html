@@ -14,9 +14,9 @@
     <meta name="apple-mobile-web-app-title" content="">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="format-detection" content="telephone=no, email=no">
-    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.4/weui.min.js"></script>
-    <script type="text/javascript" charset="utf-8" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
     <script src="/seven_night/static/js/sha1.js"></script>
     <script src="/seven_night/static/js/countdown.min.js"></script>
     <script src="/seven_night/static/js/jscss/qrcode.min.js"></script>
@@ -47,10 +47,10 @@
 
         </div>
         <div class="page__bd">
-            <div class="barrage js_barrage_wrap" style="overflow: hidden;">
-                <div id="barrage1" class="js_barrage_line" style="position: relative"></div>
-                <div id="barrage2" class="js_barrage_line" style="position: relative"></div>
-                <div id="barrage3" class="js_barrage_line" style="position: relative"></div>
+            <div class="barrage js_barrage_wrap" style="top:3.6rem;overflow:hidden">
+                <div id="barrage1" class="js_barrage_line" style="position:relative"></div>
+                <div id="barrage2" class="js_barrage_line" style="position:relative"></div>
+                <div id="barrage3" class="js_barrage_line" style="position:relative"></div>
 
             </div>
         </div>
@@ -79,7 +79,7 @@
                             <div class="weui-panel__bd">
                                 <div class="weui-media-box weui-media-box_small-appmsg">
                                     <a href="javascript:;">
-                                        <p class="to">TO:<input class="weui-input to_input" type="text"
+                                        <p class="to">To:<input class="weui-input to_input" type="text"
                                                                 placeholder="亲爱的"
                                                                 id="data_to">
                                         </p>
@@ -93,7 +93,7 @@
                                     </div>
                                     <label for="weuiAgree" class="weui-agree">
 
-                                        <p class="from">Form:<input class="weui-input from_input" type="text"
+                                        <p class="from">From:<input class="weui-input from_input" type="text"
                                                                     placeholder="Lover" id="data_from"></p>
                                     </label>
                                 </div>
@@ -104,7 +104,7 @@
             </div>
         </div>
         <label for="weuiAgree" class="weui-agree">
-            <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox agree_checkbox"/>
+            <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox agree_checkbox" checked="checked" />
             <span class="weui-agree__text" >
                         公开上墙
             </span>
@@ -248,7 +248,7 @@
                                     <label for="weuiAgree" class="weui-agree">
 
 
-                                        <p class="from">Form:<input class="weui-input from_input" type="text"
+                                        <p class="from">From:<input class="weui-input from_input" type="text"
                                                                     readonly="readonly" placeholder="Lover"
                                                                     id="back_data_from">
                                         </p>
@@ -260,7 +260,7 @@
                 </div>
             </div>
         </div>
-        <div class="info">
+	 <div class="info">
             <p class="info_tip">基于根源链上链技术，信息已在根源链第{{.height}}区块中被记录，信息永久有效不可纂改</p>
             <div class="nav2"></div>
         </div>
@@ -273,7 +273,7 @@
             <p id="up_content"></p>
             <p id="up_from"></p>
             <p class="weui-btn-area">
-                <a href="javascript:openShare();" class="weui-btn weui-btn_primary deliver">投递</a>
+                <a href="javascript:openShare();" class="weui-btn weui-btn_primary deliver">分享</a>
                 <a onclick="findqk();"  class="weui-btn weui-btn_primary check_back" id="findqkuai">查看爱的印记</a>
             </p>
         </div>
@@ -299,7 +299,7 @@
         <div class="weui-dialog dialog_tipTo" id="phoneDiv">
             <div class="weui-dialog__bd">
                 <p class="tip_word"><input id="phoneNumber"class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入领取人手机号码"></p >
-                <p class="tip_word">地址:<input id="address"class="weui-input" type="number"  placeholder="地址"></p >
+		<p class="tip_word"><input id="address"class="weui-input" type="text"  placeholder="请输入地址"></p >
             </div>
             <div class="weui-dialog__ft home_upload">
                 <p><a onclick="sendNubAndPrize()"class="weui-dialog__btn weui-dialog__btn_primary ok_btn">确定</a></p >
@@ -326,7 +326,7 @@
                             <div class="weui-panel__bd">
                                 <div class="weui-media-box weui-media-box_small-appmsg second_letter">
                                     <a href="javascript:;">
-                                        <p class="to">TO:<input class="weui-input to_input" type="text"
+                                        <p class="to">To:<input class="weui-input to_input" type="text"
                                                                 readonly="readonly" placeholder="亲爱的" id="share_up_to"
                                                                 value="{{ .to}}">
                                         </p>
@@ -340,7 +340,7 @@
                                         </div>
                                     </div>
                                     <label for="weuiAgree" class="weui-agree _sender">
-                                        <p class="from_second">Form:<input class="weui-input from_input" type="text" value="{{ .from}}"
+                                        <p class="from_second">From:<input class="weui-input from_input" type="text" value="{{ .from}}"
                                                                     readonly="readonly" placeholder="Lover"
                                                                     id="share_up_from">
                                         </p>
@@ -366,7 +366,7 @@
                             <div class="weui-panel__bd">
                                 <div class="weui-media-box weui-media-box_small-appmsg second_letter">
                                     <a href="javascript:;">
-                                        <p class="to">TO:<input class="weui-input to_input" type="text"
+                                        <p class="to">To:<input class="weui-input to_input" type="text"
                                                                 readonly="readonly" placeholder="神秘人" id="data_to">
                                         </p>
                                     </a>
@@ -382,7 +382,7 @@
                                         </div>
                                     </div>
                                     <label for="weuiAgree" class="weui-agree sender">
-                                        <p class="from">Form:<input class="weui-input from_input" type="text"
+                                        <p class="from">From:<input class="weui-input from_input" type="text"
                                                                     readonly="readonly" placeholder="From" value="神秘人"
                                                                     id="data_from">
                                         </p>
@@ -393,7 +393,7 @@
                     </div>
                 </div>
             </div>
-            <div class="weui-msg__opr-area expresses">
+            <div class="weui-msg__opr-area" style="margin-top:0.5rem">
                 <p class="weui-btn-area">
                     <a href="javascript:jumpHome();" class="weui-btn weui-btn_primary also_send">我也要表白</a>
                 </p>
@@ -422,6 +422,7 @@
     var currentScene = 'scene_home';//'';
     var prevScene;
     var payId = '';
+    var randNumber=1000+10*{{.count}}
     var successPay = '';
     var isReachTime = {{ .isReachTime}};// = ;
     var openid ={{.openid }}
@@ -567,7 +568,7 @@
 
                         /*var expireDate = new Date(res.data.expireUtc);*/
                         // TODO: format it
-                        $("#payExpire").html('支付于 ' + "r" + ' 失效');
+                        $("#payExpire").html('支付于 ' + "20分钟后" + '失效');
                         if (res.isPay != 1) {
                             addr = res.addr
                             payId = res.payId;
@@ -581,6 +582,8 @@
                             //地址和高度赋值
                             addr=res.addr
                             height=res.height
+				debugger
+			 $("#findqkuai").attr("data-value",res.ethaddr)	
                             //显示官方付款
                             $("#iosDialog2").css("display", "block");
 
@@ -614,10 +617,14 @@
                 } else if (res.data.success) {
                     //分享的页面初始化加载
                     shareUrl = 'http://service.genyuanlian.com/seven_night/index?shareopenid=' + openid + '&addr=' + addr
+		   //分享的标题初始化加载
+		   randNumber=randNumber+2
+		    shareTitle="我是第"+randNumber+"个在根源链上表白的人"
                     share();
                     //设置高度
                     $("#witness").html(res.data.height);
-                    //设置区块链
+		    debugger
+		  //设置区块链浏览器的分享
                     $("#findqkuai").attr("data-value",res.data.ethaddr)
                     //显示轮盘的花旦
                     payfortime=1
@@ -636,6 +643,8 @@
     //跳转到支付完成，需要分享的页面
    var  sharePage=function(){
         shareUrl = 'http://service.genyuanlian.com/seven_night/index?shareopenid=' + openid + '&addr=' + addr
+	randNumber=randNumber+2
+         shareTitle="我是第"+randNumber+"个在根源链上表白的人"
         //重新初始化微信分享
         share()
        //回显和不可编辑
@@ -672,7 +681,7 @@
     }
 
     function jumpHome() {
-        location.href = shareLink
+        window.location.href = shareLink
 
     }
 
@@ -764,7 +773,7 @@
 
 
         //定时器
-      var targetTime = new Date("2018-08-15 17:00:00");
+      var targetTime = new Date("2018-08-16T16:00:00");
        var timerId = countdown(
 
             function(ts) {
@@ -804,7 +813,7 @@
     //弹幕效果
     let Barrage = function() {
         this.data = []
-        this.speed = 1.5
+        this.speed = 1
         this.list = []
 
         this.wrapInfo = {
@@ -836,7 +845,7 @@
 
             el.dataset.left = left
 
-            el.style.transform = `translate(${left-150}px, 0)`
+            el.style.transform = `translate(${left}px, 0)`
 
             window.requestAnimationFrame(() => {
                 this.raf(el)
@@ -851,6 +860,7 @@
             {{ end }}
         }
     }
+     var positionRecords = {};
 
     Barrage.prototype.createElement = function() {
         let data = this.data.shift()
@@ -867,17 +877,19 @@
 
         div.style.backgroundSize = "100%,100%";
 
-        div.style.position="absolute";
-
-        div.style.top="0";
-
-        div.style.left="0";
-
         div.style.width="60%";
 
         div.style.height="0.8rem";
 
         div.style.textAlign="center";
+
+	div.style.position="absolute";
+	div.style.overflow="hidden";
+        div.style.textOverflow = "ellipsis";
+       div.style.whiteSpace="nowrap";
+        div.style.top="0";
+
+        div.style.left="0";
 
         div.style.transform = `translate(${this.wrapInfo.width}px, 0)`
 
@@ -885,7 +897,16 @@
 
         div.dataset.index = index
 
-        div.dataset.left = this.wrapInfo.width
+	var idx = `${index}`;
+
+	if (positionRecords[idx]) {
+           div.dataset.left = Number(positionRecords[idx]) + 170;
+           } else {
+               div.dataset.left = 10;
+              }
+	positionRecords[idx] = div.dataset.left;
+
+       // div.dataset.left = this.wrapInfo.width
 
         console.log(index)
 
@@ -998,7 +1019,7 @@
                      lunpan()
                      debugger
                      $("#phoneNumber").val("")
-                     $("#address").val("")
+		     $("#address").val("")
                      $("#numberAndName").css("display","none")
 
                     //无论成功都跳转到下一页
@@ -1009,7 +1030,9 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
-        lunpan()
+       lunpan() 
+	randNumber=randNumber+1
+        shareTitle="我是第"+randNumber+"个在根源链上表白的人"
         share()
         recordoncklickbanding()
     })
@@ -1020,7 +1043,7 @@
     var sendNubAndPrize=function () {
         $("#numberAndName").css("display","none")
      var  phoneNuber= $("#phoneNumber").val()
-        var  userAddr= $("#address").val()
+	var  userAddr= $("#address").val()
         ajaxprize(ifprize,phoneNuber,userAddr)
 
     }
@@ -1028,6 +1051,7 @@
         $("#data_to").val("")
         $("#data_from").val("")
         $("#data_content").val("")
+	$("#updateimg").attr("src","./static/images/my2.png")
         ajaxHistoryMessage()
     }
     var ifEmpty=function () {
@@ -1044,7 +1068,7 @@
             historyaddr=  $("#historyAddr"+num+"").attr("data-value")
             historyword=  $("#historyWord"+num+"").attr("data-value")
             historyto=  $("#historyTo"+num+"").attr("data-value")
-            historyethaddr=  $("#historyEthAddr"+num+"").attr("data-value")
+            historyethaddr=  $("#historyEthaddr"+num+"").attr("data-value")
             historyefrom=  $("#historyFrom"+num+"").attr("data-value")
             historyHeight=  $("#historyHeight"+num+"").attr("data-value")
             debugger
@@ -1055,13 +1079,16 @@
             $("#back_data_to").val(historyto)
             $("#back_data_from").val(historyefrom)
             $("#back_textarea").val(historyword)
-            $("#witness").val(historyHeight)
+            $("#witness").html(historyHeight)
+	    
             $("#findqkuai").attr("data-value",historyethaddr)
             //调用赋值图片的方法
             backimageurl(historyImageurl)
             //设置初始化微信分享的页面
             //初始化addr
             shareUrl = 'http://service.genyuanlian.com/seven_night/index?shareopenid=' + openid + '&addr=' + historyaddr
+	    randNumber=randNumber+2
+            shareTitle="我是第"+randNumber+"个在根源链上表白的人"
             share()
 
         })
@@ -1092,12 +1119,13 @@
 
                                 forhtml=forhtml+  `<div class="weui-media-box weui-media-box_text record_content" id="forEach`+i+`"><p type="hidden" name="ethaddr" id="historyEthaddr`+i+`" data-value="`+jsons[i].ethaddr+`">`  + `</p>
  <p type="hidden" name="height" id="historyHeight`+i+`" data-value="`+jsons[i].height+`">` +   `</p>` +
+`<p type="hidden" name="addr" id="historyAddr`+i+`" data-value="`+jsons[i].addr+`">` +   `</p>` +
+
                                         `<p type="hidden" name="imageurl" id="historyImageurl`+i+`" data-value="`+jsons[i].imageurl+`">` +   `</p>` +
-                                        `<p type="hidden" name="addr" id="historyAddr`+i+`" data-value="`+jsons[i].imageurl+`">` +   `</p>` +
                                         `<p type="hidden" name="from" id="historyFrom`+i+`" data-value="`+jsons[i].from+`">` + `</p>`  +
 
- `<label for="weuiAgree" class="weui-agree" style="text-align: right">
- <p class="weui-media-box__title to_lover"  id="historyTo`+i+`"  data-value="`+jsons[i].to+`">` + jsons[i].to + `</p>
+ `<label for="weuiAgree" class="weui-agree" style="text-align: left">
+ <p class="weui-media-box__title to_lover"  id="historyTo`+i+`"  data-value="`+jsons[i].to+`">`+"TO:" + jsons[i].to + `</p>
  </label>`+
  `<p class="weui-media-box__desc say_word" id="historyWord`+i+`"data-value="`+jsons[i].word+`">` + jsons[i].word + `</p>`+
                                         `</div>`
@@ -1114,6 +1142,7 @@
     }
     //查看区块链浏览器
     var findqk=function () {
+		debugger
         location.href="https://block.genyuanlian.com/tx/"+$("#findqkuai").attr("data-value")
     }
 </script>
