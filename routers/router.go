@@ -10,7 +10,7 @@ func init() {
 
 	//登陆
 	beego.Router("/seven_night/redirecturl", &controllers.MainController{}, "*:Redirecturl")
-	beego.Router("/seven_night/index", &controllers.MainController{}, "get:Index")
+	beego.Router("/seven_night/index", &controllers.MainController{}, "*:Index")
 	//分享接口
 	beego.Router("/seven_night/upimageAndmessage", &controllers.MainController{}, "*:UpImageAndMessage")
 	beego.Router("/seven_night/getpayid", &controllers.MainController{}, "*:GetWxPayId")

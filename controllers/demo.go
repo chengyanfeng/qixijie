@@ -61,12 +61,12 @@ func (c *MainController) UpImageAndMessage() {
 	}
 	imagePath1 := imagePath
 	data.ImageUrl = imagePath1
-	ethaddr, payId := util.GetEthAddress()
-	data.Addr = ethaddr
+	addr, payId := util.GetEthAddress()
+	data.Addr = addr
 	openid := c.GetString("openid")
 	mongdb.Query = &util.P{"userOpenId": openid}
 	count := mongdb.Count()
-	if count < 5 {
+	if count < 1 {
 		//数据上链
 		ethaddr := UpMessage(data.From + data.Word + data.To)
 		//获取数据高度
@@ -117,7 +117,8 @@ func (c *MainController) Redirecturl() {
 	ShareOpenid := c.GetString("shareopenid")
 	util.S("addr", Addr)
 	util.S("shareopenid", ShareOpenid)
-	redirecturl := "http%3a%2f%2fservice.genyuanlian.com%2fseven_night%2findex"
+
+	redirecturl := "https%3a%2f%2fservice.genyuanlian.com%2fseven_night%2findex"
 	url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + def.WEIXINAPPID + "&redirect_uri=" + redirecturl +
 		"&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect"
 	c.Redirect(url, 302)
@@ -375,11 +376,12 @@ func (c *MainController) Prize() {
 	openid := c.GetString("openid")
 	prize := c.GetString("prize")
 	phoneNumber := c.GetString("number")
+	useraddr := c.GetString("useraddr")
 	time := time.Now().Unix()
 	docm := mongp["userprize"]
 	docm2string := util.ToString(docm)
 	mongdb := db.D(docm2string, mongp)
-	err := mongdb.Add(util.P{"userOpenId": openid, "prize": prize, "timestamp": time, "phoneNumber": phoneNumber})
+	err := mongdb.Add(util.P{"userOpenId": openid, "prize": prize, "timestamp": time, "phoneNumber": phoneNumber,"userAddr":useraddr})
 	if err == nil {
 		c.Data["json"] = util.P{"code": 0}
 		c.ServeJSON()
@@ -467,7 +469,7 @@ func getShowOpenMessage(AllUp []util.P) (mpp []util.P) {
 func timeoder() int {
 	nowtime := time.Now()
 	nowtimenuix := nowtime.Unix()
-	the_time, err := time.ParseInLocation("2006-01-02 15:04:05", "2018-08-15 17:00:00", time.Local)
+	the_time, err := time.ParseInLocation("2006-01-02 15:04:05", "2018-08-17 00:00:00", time.Local)
 	if err == nil {
 		unix_time := the_time.Unix()
 		if nowtimenuix < unix_time {

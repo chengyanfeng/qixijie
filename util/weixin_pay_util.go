@@ -167,7 +167,7 @@ func JsonEncode(v interface{}) (r string) {
 
 //查询是否支付，这是TSTK,不是微信的支付。暂时放到工具类中
 func CheckIfPay(payid string) bool {
-	retrnbody, _ := http.Get("http://service.genyuanlian.com/api/bstk/pay/check?payid=" + payid)
+	retrnbody, _ := http.Get("https://service.genyuanlian.com/api/bstk/pay/check?payid=" + payid)
 	defer retrnbody.Body.Close()
 	eth_body, _ := ioutil.ReadAll(retrnbody.Body)
 	p := *JsonDecode([]byte(string(eth_body)))
@@ -239,7 +239,7 @@ func GetImageFromCould(mediaId, url string) (imagePath string) {
 
 //获取pay地址
 func GetEthAddress() (ethAddress, payid string) {
-	a, _ := http.Get("http://service.genyuanlian.com/api/bstk/pay/request?amount=1")
+	a, _ := http.Get("https://service.genyuanlian.com/api/bstk/pay/request?amount=520")
 	defer a.Body.Close()
 	eth_body, _ := ioutil.ReadAll(a.Body)
 	p := *JsonDecode([]byte(string(eth_body)))

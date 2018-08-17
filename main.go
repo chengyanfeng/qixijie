@@ -14,7 +14,6 @@ func main() {
 	beego.SetStaticPath("/seven_night/image","./image/")
 	beego.SetStaticPath("/seven_night/static","./static/")
 
-
 	def.Outtradeno=beego.AppConfig.String("outtradeno")
 	beego.Run()
 }

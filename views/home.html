@@ -393,7 +393,7 @@
                     </div>
                 </div>
             </div>
-            <div class="weui-msg__opr-area express">
+            <div class="weui-msg__opr-area expresses">
                 <p class="weui-btn-area">
                     <a href="javascript:jumpHome();" class="weui-btn weui-btn_primary also_send">我也要表白</a>
                 </p>
@@ -617,6 +617,8 @@
                     share();
                     //设置高度
                     $("#witness").html(res.data.height);
+                    //设置区块链
+                    $("#findqkuai").attr("data-value",res.data.ethaddr)
                     //显示轮盘的花旦
                     payfortime=1
                     $("#luck_draw").css("display","block")
@@ -670,7 +672,7 @@
     }
 
     function jumpHome() {
-        window.location.href = shareLink
+        location.href = shareLink
 
     }
 
@@ -985,17 +987,18 @@
     });
 
 //抽奖后的ajax 发送
-     var ajaxprize=function(prizesend,numbe,name){
+     var ajaxprize=function(prizesend,numbe,userAddr){
          $.post("/seven_night/prize",
                  {
                      openid: openid,
                      prize:prizesend,
                      number:numbe,
-                     name:name
+                     useraddr:userAddr
                  }, function (res, status) {
                      lunpan()
                      debugger
                      $("#phoneNumber").val("")
+                     $("#address").val("")
                      $("#numberAndName").css("display","none")
 
                     //无论成功都跳转到下一页
@@ -1017,7 +1020,8 @@
     var sendNubAndPrize=function () {
         $("#numberAndName").css("display","none")
      var  phoneNuber= $("#phoneNumber").val()
-        ajaxprize(ifprize,phoneNuber,"")
+        var  userAddr= $("#address").val()
+        ajaxprize(ifprize,phoneNuber,userAddr)
 
     }
     var cleardata=function(){
@@ -1089,6 +1093,7 @@
                                 forhtml=forhtml+  `<div class="weui-media-box weui-media-box_text record_content" id="forEach`+i+`"><p type="hidden" name="ethaddr" id="historyEthaddr`+i+`" data-value="`+jsons[i].ethaddr+`">`  + `</p>
  <p type="hidden" name="height" id="historyHeight`+i+`" data-value="`+jsons[i].height+`">` +   `</p>` +
                                         `<p type="hidden" name="imageurl" id="historyImageurl`+i+`" data-value="`+jsons[i].imageurl+`">` +   `</p>` +
+                                        `<p type="hidden" name="addr" id="historyAddr`+i+`" data-value="`+jsons[i].imageurl+`">` +   `</p>` +
                                         `<p type="hidden" name="from" id="historyFrom`+i+`" data-value="`+jsons[i].from+`">` + `</p>`  +
 
  `<label for="weuiAgree" class="weui-agree" style="text-align: right">
