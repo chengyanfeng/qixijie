@@ -237,7 +237,7 @@
                                         <p class="to">TO:<input class="weui-input to_input" type="text"
                                                                 readonly="readonly" placeholder="亲爱的" id="back_data_to">
                                         </p>
-                                        <span class="picture"><img src="./static/images/my2.png" id="updateimg1"></span>
+                                        <span class="picture"><img src="./static/images/my.png" id="updateimg1"></span>
                                     </a>
                                     <div class="weui_cell">
                                         <div class="weui_cell_bd weui_cell_primary">
@@ -422,7 +422,7 @@
     var currentScene = 'scene_home';//'';
     var prevScene;
     var payId = '';
-    var randNumber=1000+10*{{.count}}
+    var randNumber=5000+10*{{.count}}
     var successPay = '';
     var isReachTime = {{ .isReachTime}};// = ;
     var openid ={{.openid }}
@@ -582,6 +582,11 @@
                             //地址和高度赋值
                             addr=res.addr
                             height=res.height
+			    //轮盘重新初始化
+			      var g= res.prize
+				  //初始化概率
+				getG(g)
+				lunpan()		
 				debugger
 			 $("#findqkuai").attr("data-value",res.ethaddr)	
                             //显示官方付款
@@ -623,6 +628,12 @@
                     share();
                     //设置高度
                     $("#witness").html(res.data.height);
+					//设置轮盘
+					 //轮盘重新初始化
+			      var g= res.data.prize
+				  //初始化概率
+				getG(g)
+				lunpan()
 		    debugger
 		  //设置区块链浏览器的分享
                     $("#findqkuai").attr("data-value",res.data.ethaddr)
@@ -1008,11 +1019,12 @@
     });
 
 //抽奖后的ajax 发送
-     var ajaxprize=function(prizesend,numbe,userAddr){
+     var ajaxprize=function(numbe,userAddr){
+	ethAddr=$("#findqkuai").attr("data-value")
          $.post("/seven_night/prize",
                  {
                      openid: openid,
-                     prize:prizesend,
+                     ethAddr:ethAddr,
                      number:numbe,
                      useraddr:userAddr
                  }, function (res, status) {
@@ -1044,7 +1056,7 @@
         $("#numberAndName").css("display","none")
      var  phoneNuber= $("#phoneNumber").val()
 	var  userAddr= $("#address").val()
-        ajaxprize(ifprize,phoneNuber,userAddr)
+        ajaxprize(phoneNuber,userAddr)
 
     }
     var cleardata=function(){
@@ -1145,5 +1157,84 @@
 		debugger
         location.href="https://block.genyuanlian.com/tx/"+$("#findqkuai").attr("data-value")
     }
+	
+	
+	
+	var getG=function(g){
+	
+	switch(g)
+                                   {
+                                      case 1:
+                                             g1=1000;
+					     g2=0;
+					     g3=0;
+					     g4=0;
+					     g5=0;
+					     g6=0;
+                                                break;
+                                       case 2:
+                                             g1=0;
+					     g2=1000;
+					     g3=0;
+					     g4=0;
+					     g5=0;
+					     g6=0;
+                                              break;
+					case 3:
+						g1=0;
+						g2=0;
+						g3=1000;
+						g4=0;
+						g5=0;
+						g6=0;
+						break;
+                                         case 4:
+						g1=0;
+						g2=0;
+						g3=0;
+						g4=1000;
+						g5=0;
+						g6=0;
+					break;
+					case 5:
+                        g1=0;
+                        g2=0;
+                        g3=0;
+                        g4=0;
+                        g5=1000;
+                        g6=0;
+					break;
+					case 6:
+                        g1=0;
+                        g2=0;
+                        g3=0;
+                        g4=0;
+                        g5=0;
+                        g6=1000;
+					break;
+                                             default:
+						g1=1000;
+						g2=0;
+						g3=0;
+						g4=0;
+						g5=0;
+						g6=0;
+					break;
+                                          }	
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </script>
 </html>
