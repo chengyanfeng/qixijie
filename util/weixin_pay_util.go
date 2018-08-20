@@ -239,6 +239,7 @@ func GetImageFromCould(mediaId, url string) (imagePath string) {
 
 //获取pay地址
 func GetEthAddress() (ethAddress, payid string) {
+
 	a, _ := http.Get("https://service.genyuanlian.com/api/bstk/pay/request?amount=520")
 	defer a.Body.Close()
 	eth_body, _ := ioutil.ReadAll(a.Body)

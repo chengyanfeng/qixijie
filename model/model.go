@@ -30,4 +30,5 @@ type Pay struct {
 	Success bool `json:"success"`
 	EthAddr string `json:"ethaddr"`
 	Height string `json:"height"`
+	Prize int  `json:"prize"`
 }

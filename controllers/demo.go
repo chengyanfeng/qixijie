@@ -52,11 +52,11 @@ func (c *MainController) UpImageAndMessage() {
 	data.Timestamp = util.ToString(time.Now().Unix())
 	imagePath := ""
 	if medId == "" {
-		imagePath = "http://service.genyuanlian.com/seven_night/static/images/my2.png"
+		imagePath = "http://service.genyuanlian.com/seven_night/static/images/my.png"
 	} else {
 		imagePath = util.GetImageFromCould(medId, "./image/")
 		if imagePath == "fail" {
-			imagePath = "http://service.genyuanlian.com/seven_night/static/images/my2.png"
+			imagePath = "http://service.genyuanlian.com/seven_night/static/images/my.png"
 		}
 	}
 	imagePath1 := imagePath
@@ -76,7 +76,9 @@ func (c *MainController) UpImageAndMessage() {
 		}
 		if ethaddr != "false" {
 			mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "1", "addr": data.Addr, "ethaddr": ethaddr, "height": height, "ifOpenShow": ifOpenShow})
-			c.Data["json"] = map[string]interface{}{"userOpenId": openid, "addr": data.Addr, "payId": payId, "isPay": 1, "code": 0, "ethaddr": ethaddr, "height": height}
+			//返回中奖信息
+			Prize:=InserPrize(openid,ethaddr)
+			c.Data["json"] = map[string]interface{}{"userOpenId": openid, "addr": data.Addr, "payId": payId, "isPay": 1, "code": 0, "ethaddr": ethaddr, "height": height,"prize":Prize}
 			c.ServeJSON()
 		}
 	} else {
@@ -91,9 +93,10 @@ func (c *MainController) UpImageAndMessage() {
 			}
 			if ethaddr != "false" {
 				mongdb.Add(util.P{"data": data, "userOpenId": openid, "IfPay": "1", "addr": data.Addr, "ethaddr": ethaddr, "height": height, "ifOpenShow": ifOpenShow})
+				Prize:=InserPrize(openid,ethaddr)
 				//更新用户分享信息
 				SetShareInfo(openid)
-				c.Data["json"] = map[string]interface{}{"userOpenId": openid, "addr": data.Addr, "payId": payId, "isPay": 1, "code": 0, "ethaddr": ethaddr, "height": height}
+				c.Data["json"] = map[string]interface{}{"userOpenId": openid, "addr": data.Addr, "payId": payId, "isPay": 1, "code": 0, "ethaddr": ethaddr, "height": height,"prize":Prize}
 				c.ServeJSON()
 			}
 		} else {
@@ -106,7 +109,6 @@ func (c *MainController) UpImageAndMessage() {
 
 //获取所有表白信息
 func (c *MainController) GetUserMessage() {
-	getMessage("", "", "")
 	c.Data["json"] = getMessage("", "", "")
 	c.ServeJSON()
 }
@@ -190,6 +192,8 @@ func (c *MainController) Index() {
 		}
 		c.Data["openid"] = (*userinfo)["openid"].(string)
 		c.Data["nodelist"] = nodelist
+		countAll:=getMessageCount
+		c.Data["count"]=countAll
 		c.TplName = "home.html"
 	} else {
 		p := getMessage(ShareOpenid, Addr, "")
@@ -361,6 +365,8 @@ func (c *MainController) CheckPay() {
 		pay.EthAddr = ethaddr
 		if len(ethaddr) > 0 {
 			pay.Success = true
+			//支付成功返回抽奖字段
+		 pay.Prize=InserPrize(openid,ethaddr)
 		}
 		c.Data["json"] = map[string]interface{}{"code": 0, "data": pay}
 		c.ServeJSON()
@@ -374,14 +380,19 @@ func (c *MainController) CheckPay() {
 //抽奖的接口
 func (c *MainController) Prize() {
 	openid := c.GetString("openid")
-	prize := c.GetString("prize")
+	ethAddr := c.GetString("ethAddr")
 	phoneNumber := c.GetString("number")
 	useraddr := c.GetString("useraddr")
 	time := time.Now().Unix()
 	docm := mongp["userprize"]
 	docm2string := util.ToString(docm)
 	mongdb := db.D(docm2string, mongp)
-	err := mongdb.Add(util.P{"userOpenId": openid, "prize": prize, "timestamp": time, "phoneNumber": phoneNumber,"userAddr":useraddr})
+	count:=mongdb.Find(util.P{"userOpenId": openid,"ethAddr": ethAddr}).Count()
+	if count<1{
+		c.Data["json"] = util.P{"code": 1}
+		c.ServeJSON()
+	}else {
+	err:=mongdb.Upsert(util.P{"userOpenId": openid,"ethAddr": ethAddr}, util.P{"phoneNumber": phoneNumber,"userAddr":useraddr,"timestamp":time})
 	if err == nil {
 		c.Data["json"] = util.P{"code": 0}
 		c.ServeJSON()
@@ -389,18 +400,20 @@ func (c *MainController) Prize() {
 		c.Data["json"] = util.P{"code": 1}
 		c.ServeJSON()
 	}
+	}
 }
-//抽奖的接口，内部奖项
-func  InserPrize(openid string,prize string) {
-	time := time.Now().Unix()
+//抽奖的接口，内部返回接口
+func  InserPrize(openid string,ethAddr string)(prizeIn int) {
 	docm := mongp["userprize"]
 	docm2string := util.ToString(docm)
 	mongdb := db.D(docm2string, mongp)
-	err := mongdb.Add(util.P{"userOpenId": openid, "prize": prize, "timestamp": time})
+	//获取prize的中的奖项
+	prize,prizeInt:=getPrizeRand()
+	err := mongdb.Add(util.P{"userOpenId": openid, "prize": prize,"ethAddr":ethAddr})
 	if err == nil {
-
+	return prizeInt
 	} else {
-
+		return 11
 	}
 }
 
@@ -508,3 +521,10 @@ func timeoder() int {
 	}
 
 }
+func getMessageCount()(count int){
+	userdata := mongp["userdata"]
+	docm2string := util.ToString(userdata)
+	mongdb := db.D(docm2string, mongp)
+	 count=mongdb.Count()
+		return
+	 }
